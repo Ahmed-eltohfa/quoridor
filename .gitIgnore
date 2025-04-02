@@ -1,0 +1,55 @@
+# Ignore editor and IDE files
+.vscode/
+.idea/
+
+# Ignore build output
+build/
+dist/
+out/
+
+# Ignore package manager directories
+node_modules/
+vendor/
+
+# Ignore log files
+*.log
+
+# Ignore compiled files
+*.class
+*.jar
+*.war
+*.ear
+
+# Ignore temporary files
+*.tmp
+*.swp
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore configuration files
+*.config
+*.env
+
+# Ignore database files
+*.db
+*.sqlite
+
+# Ignore generated documentation
+docs/
+
+# Ignore OS-specific files
+.DS_Store
+desktop.ini
+
+# Ignore backup files
+*.bak
+*.backup
+
+# Ignore cache files
+.cache/
+
+# Ignore compiled Python files
+*.pyc
+__pycache__/
