@@ -1,15 +1,3 @@
-const pointGenerator = () => {
-    return {
-        up: false,
-        down: false,
-        left: false,
-        right: false
-    }
-}
-const x = pointGenerator();
-
-
-
 class Game {
     constructor(info) {
         console.log(info);
