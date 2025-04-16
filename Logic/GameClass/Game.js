@@ -1,3 +1,6 @@
+import Player from "./Player.js";
+
+
 class Game {
     constructor(info) {
         this.init(info);
@@ -5,9 +8,9 @@ class Game {
 
     init(info) {
         // attributes
-        console.log(info);
-        this.p1 = info.p1;
-        this.p2 = info.p2;
+        // console.log(info);
+        this.p1 = new Player(info.p1.name, 1, info.p1.isComputer, info.p1.difficulty, info.p1.nWalls);
+        this.p2 = new Player(info.p2.name, 2, info.p2.isComputer, info.p2.difficulty, info.p2.nWalls);
         this.boardSize = info.boardSize || 9;
         this.mod = info.mod || {};
         this.t1 = 0;
@@ -29,11 +32,9 @@ class Game {
         );
         this.p1.position = this.p1.position || [0, Math.floor(this.boardSize / 2)];
         this.p2.position = this.p2.position || [this.boardSize - 1, Math.floor(this.boardSize / 2)];
-        this.p1.walls = this.p1.walls || 10;
-        this.p2.walls = this.p2.walls || 10;
         this.board[this.p1.position[0]] = this.board[this.p1.position[0]].substring(0, this.p1.position[1]) + '1' + this.board[this.p1.position[0]].substring(this.p1.position[1] + 1);
         this.board[this.p2.position[0]] = this.board[this.p2.position[0]].substring(0, this.p2.position[1]) + '2' + this.board[this.p2.position[0]].substring(this.p2.position[1] + 1);
-        console.log(this.p1, this.p2);
+        // console.log(this.p1, this.p2);
     }
 
     restartGame() {
@@ -147,6 +148,7 @@ class Game {
         return false; // same tile, or diagonal — not allowed
     }
 
+    // using bfs to check if the player can reach the other side
     checkPath(start) {
         const visited = Array.from({ length: this.boardSize }, () => Array(this.boardSize).fill(false));
         const queue = [start];
@@ -201,7 +203,7 @@ class Game {
         } else if (type[0] === 'p') { // check pawn move ex. p1_2-6
             const from = this.isP1Turn ? this.p1.position : this.p2.position;
             const to = splitMove[1].split('-').map((e) => parseInt(e) - 1);
-            console.log(from, to);
+            // console.log(from, to);
             if (from[0] === to[0] && from[1] === to[1]) {
                 console.log("Invalid Move: same position");
                 return false;
@@ -237,17 +239,17 @@ class Game {
             x.sort((a, b) => a - b);
             y.sort((a, b) => a - b);
             const isVertical = y.length === 2;
-            console.log(x, y);
+            // console.log(x, y);
             if (x.length + y.length !== 3 || x.length >= 3 || y.length >= 3) {
                 console.log("Invalid Move: wall move");
                 return false;
             } else if ((isVertical && Math.abs(y[0] - y[1]) !== 2) || (!isVertical && Math.abs(x[0] - x[1]) !== 2)) {
                 console.log("Invalid wall length");
                 return false;
-            } else if (this.isP1Turn && this.p1.walls <= 0) {
+            } else if (this.isP1Turn && this.p1.nWalls <= 0) {
                 console.log("Invalid Move: No walls left");
                 return false;
-            } else if (!this.isP1Turn && this.p2.walls <= 0) {
+            } else if (!this.isP1Turn && this.p2.nWalls <= 0) {
                 console.log("Invalid Move: No walls left");
                 return false;
             } else if (isVertical && (x[0] < 0 || x[0] >= this.boardSize + 1 || y[0] < 0 || y[1] >= this.boardSize + 1)) {
@@ -270,7 +272,7 @@ class Game {
                     this.getWallSymbol(this.walls?.[c + 1]?.[r]),
                     this.getWallSymbol(this.walls?.[c - 1]?.[r])
                 ];
-                console.log(existing);
+                // console.log(existing);
 
 
                 if (existing.some(cell => cell && '│┼├┤'.includes(cell)) || existing[0] == '─' || existing[1] == '╷' || existing[2] == '╵') {
@@ -287,7 +289,7 @@ class Game {
                     this.getWallSymbol(this.walls?.[c]?.[r + 1]),
                     this.getWallSymbol(this.walls?.[c]?.[r - 1])
                 ];
-                console.log(existing);
+                // console.log(existing);
 
                 if (existing.some(cell => cell && '─┼┬┴'.includes(cell)) || existing[0] == '│' || existing[1] == '╴' || existing[2] == '╶') {
                     console.log("Invalid horizontal wall placement: overlaps or connects to existing wall improperly");
@@ -295,7 +297,7 @@ class Game {
                 }
             }
 
-
+            // check if the wall will block all the ways for the player using bfs
             const backup = this.walls.map(row => row.map(cell => ({ ...cell })));
             if (isVertical) {
                 const row = x[0];
@@ -334,6 +336,10 @@ class Game {
 
     move(move) {
         this.timeOver();
+        if (this.isGameOver) {
+            console.log("Game Over no move");
+            return false;
+        }
         if (this.checkMove(move)) {
             // add the time to the player
             const now = Date.now();
@@ -396,17 +402,21 @@ class Game {
                     this.walls[col][row2].left = true;
                 }
                 console.log("Wall Placed");
-                this.isP1Turn ? this.p1.walls-- : this.p2.walls--;
+                this.isP1Turn ? this.p1.nWalls-- : this.p2.nWalls--;
             }
 
             this.printAllBoard(); // Visualize updated wall placement
             this.moves.push(move);
             this.isP1Turn = !this.isP1Turn;
-            this.isWin();
+            if (this.isWin()) {
+                console.log("Game Over");
+                this.isGameOver = true;
+            }
             return true;
+        } else {
+            console.log("Move not Made");
+            return false;
         }
-        console.log("Move not Made");
-        return false;
     }
 
     // check if the player time is out (10min)

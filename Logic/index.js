@@ -1,4 +1,5 @@
 import Game from "./GameClass/Game.js";
+import Player from "./GameClass/Player.js";
 import readline from 'readline';
 const rl = readline.createInterface({
     input: process.stdin,
@@ -37,7 +38,7 @@ function startNewGame() {
         rl.question("Enter Player 2's name: ", (p2Name) => {
             rl.question("Enter board size (e.g., 9): ", (boardSize) => {
                 g1 = new Game({
-                    p1: { name: p1Name, position: [7, 5] },
+                    p1: { name: p1Name, position: null },
                     p2: { name: p2Name, position: null },
                     boardSize: Number(boardSize),
                 });
@@ -68,6 +69,20 @@ function printGameStatus() {
 }
 
 function makeMove() {
+    if (!g1) {
+        console.log("No game in progress.");
+        displayMenu();
+        return;
+    } else if (g1.isWin()) {
+        console.log("Game is over. Please start a new game.");
+        displayMenu();
+        return;
+    }
+    else if (g1.isGameOver) {
+        console.log("Game is over. Please start a new game.");
+        displayMenu();
+        return;
+    }
     rl.question("Enter your move (e.g., p1_2-5 or w1_ac-g): ", (move) => {
         if (move.startsWith('p1') || move.startsWith('p2') || move.startsWith('w1') || move.startsWith('w2')) {
             g1.move(move);
@@ -79,25 +94,30 @@ function makeMove() {
 }
 
 // Initialize the game menu on start
-let g1 = null;
+let g11 = null;
 
 function gameMenu(game) {
-    g1 = game;  // Store the game object for later use
+    g11 = game;  // Store the game object for later use
     displayMenu();
 }
 
 
-displayMenu();
+// displayMenu();
 
 
 
+const g1 = new Game({
+    p1: { name: "Player 1", nWalls: 15 },
+    p2: { name: "Player 2", difficulty: "horror" },
+    boardSize: 5,
+});
 
+while (g1.isGameOver === false) {
+    g1.move(g1.p1.randomMove(g1));
+    g1.move(g1.p2.randomMove(g1));
+}
+// g1.printAllBoard();
 
-// const g1 = new Game({
-//     p1: { name: "youssef", position: null },
-//     p2: { name: "ahmed", position: null },
-//     boardSize: 9,
-// });
 
 // g1.print();
 // console.log("=========================");
