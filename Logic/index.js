@@ -108,15 +108,30 @@ function gameMenu(game) {
 
 const g1 = new Game({
     p1: { name: "Player 1", nWalls: 15 },
-    p2: { name: "Player 2", difficulty: "horror" },
+    p2: { name: "Player 2", difficulty: "easy" },
     boardSize: 5,
 });
 
+
+g1.printAllBoard();
+// g1.move("w1_ac-e");
+// g1.move("w2_df-e");
+// console.log(g1.shortestPath(1));
+// g1.move(g1.p1.mediumMove(g1));
+// g1.move(g1.p1.getEasyMove(g1));
+// console.log(g1.p1);
+// console.log('path', g1.shortestPath(1));
+// g1.checkMove("p1_4-4", [3, 1], [3, 3]);
+// console.log(g1.p1);
+
 while (g1.isGameOver === false) {
-    g1.move(g1.p1.randomMove(g1));
-    g1.move(g1.p2.randomMove(g1));
+    g1.move(g1.p1.mediumMove(g1));
+    g1.printAllBoard();
+    g1.move(g1.p2.getEasyMove(g1));
+    g1.printAllBoard();
 }
 // g1.printAllBoard();
+
 
 
 // g1.print();
@@ -127,7 +142,6 @@ while (g1.isGameOver === false) {
 // // console.log(g1.walls)
 // // g1.checkMove("p1_2-5");
 // // g1.isWin();
-// // g1.move("p1_2-5");
 // // g1.move("p2_8-5");
 // // g1.printAllBoard();
 // g1.move("w1_ac-g");

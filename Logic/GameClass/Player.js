@@ -8,7 +8,23 @@ class Player {
         this.pNum = pNum; // player number (1 or 2)
     }
 
-    makeMove(game) {
+    // return this.randomMove(game);
+    smartMove(game) {
+        // implement a smarter AI strategy (e.g., BFS, minimax)
+        if (this.difficulty === "easy") {
+            // Placeholder for easy AI logic
+            return this.randomMove(game); // Replace with actual logic
+        } else if (this.difficulty === "medium") {
+            // Placeholder for medium AI logic
+            return this.randomMove(game); // Replace with actual logic
+        }
+        else if (this.difficulty === "hard") {
+            // Placeholder for hard AI logic
+            return this.randomMove(game); // Replace with actual logic
+        }
+    }
+
+    move(game) {
         if (this.isComputer) {
             // basic placeholder for AI move logic
             if (this.difficulty === "easy") {
@@ -98,20 +114,153 @@ class Player {
         return choice;
     }
 
-    smartMove(game) {
-        // implement a smarter AI strategy (e.g., BFS, minimax)
-        if (this.difficulty === "easy") {
-            // Placeholder for easy AI logic
-            return this.randomMove(game); // Replace with actual logic
-        } else if (this.difficulty === "medium") {
-            // Placeholder for medium AI logic
-            return this.randomMove(game); // Replace with actual logic
+    getEasyMove(game) {
+        const opponent = this.pNum === 1 ? game.p2 : game.p1;
+        const myPath = game.shortestPath(this.pNum);
+        // const opPath = game.shortestPath(opponent.pNum);
+
+        // 1. Decide: Wall or Move? (50/50 if wall count > 0)
+        const canWall = this.nWalls > 0;
+        const wallOrMove = canWall && Math.random() < 0.5;
+
+        // 2. If wall: try placing near opponent’s path
+        if (wallOrMove) {
+            const wallMoves = [];
+            const wallTypes = ["h", "v"];
+            const offsets = [-1, 0, 1];
+
+            const [opRow, opCol] = opponent.position;
+
+            for (let dr of offsets) {
+                for (let dc of offsets) {
+                    for (let type of wallTypes) {
+                        const row = opRow + dr;
+                        const col = opCol + dc;
+
+                        if (row >= 0 && col >= 0 && row < game.boardSize - 1 && col < game.boardSize - 1) {
+                            const rowChar = String.fromCharCode(97 + row + 1);
+                            const nextRowChar = String.fromCharCode(97 + row + 3);
+                            const colChar = String.fromCharCode(97 + col);
+                            const nextColChar = String.fromCharCode(97 + col + 2);
+
+                            let moveStr;
+                            if (type === "h") {
+                                moveStr = `w${this.pNum}_${colChar}${nextColChar}-${rowChar}`;
+                            } else {
+                                moveStr = `w${this.pNum}_${colChar}-${rowChar}${nextRowChar}`;
+                            }
+
+                            if (game.checkMove(moveStr)) {
+                                wallMoves.push(moveStr);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (wallMoves.length > 0) {
+                return wallMoves[Math.floor(Math.random() * wallMoves.length)];
+            }
         }
-        else if (this.difficulty === "hard") {
-            // Placeholder for hard AI logic
-            return this.randomMove(game); // Replace with actual logic
+
+        // 3. Else: move forward along shortest path
+        if (myPath && myPath.length > 1) {
+            const [row, col] = myPath[1]; // next step
+            const moveStr = `p${this.pNum}_${row + 1}-${col + 1}`;
+            if (game.checkMove(moveStr)) return moveStr;
         }
+
+        // 4. Fallback: try any valid move
+        return this.randomMove(game);
     }
+
+    mediumMove(game) {
+        const pathSelfBefore = game.shortestPath(this.pNum);
+        const pathOpBefore = game.shortestPath(this.pNum === 1 ? 2 : 1);
+
+        const lenSelfBefore = pathSelfBefore?.length;
+        const lenOpBefore = pathOpBefore?.length;
+
+        let bestMove = null;
+        let bestScore = -Infinity;
+
+        // 1. Try moving forward
+        if (pathSelfBefore.length > 1) {
+            const nextPos = pathSelfBefore[1];
+            const moveStr = `p${this.pNum}_${nextPos[0] + 1}-${nextPos[1] + 1}`;
+            if (game.checkMove(moveStr)) {
+                const clone = game.clone();
+                clone.move(moveStr);
+                const newSelf = clone.shortestPath(this.pNum);
+                if (newSelf.length === 1) {
+                    return moveStr; // win
+                }
+                const newOp = clone.shortestPath(this.pNum === 1 ? 2 : 1);
+                clone.printAllBoard();
+
+                const newLenSelf = newSelf?.length;
+                const newLenOp = newOp?.length;
+
+
+                const score = (newLenOp - lenOpBefore) - (newLenSelf - lenSelfBefore);
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestMove = moveStr;
+                }
+            }
+        }
+
+
+        // 2. Try placing walls near opponent
+        if (this.nWalls > 0) {
+            const wallTypes = ['h', 'v'];
+            const offsets = [-1, 0, 1];
+            const op = this.pNum === 1 ? game.p2.position : game.p1.position;
+
+            for (let dRow of offsets) {
+                for (let dCol of offsets) {
+                    for (let type of wallTypes) {
+                        const row = op[0] + dRow;
+                        const col = op[1] + dCol;
+
+                        if (row >= 0 && col >= 0 && row < game.boardSize - 1 && col < game.boardSize - 1) {
+                            const rowChar = String.fromCharCode(97 + row + 1);
+                            const nextRowChar = String.fromCharCode(97 + row + 3);
+                            const colChar = String.fromCharCode(97 + col);
+                            const nextColChar = String.fromCharCode(97 + col + 2);
+
+                            let wallMove;
+                            if (type === 'h') {
+                                wallMove = `w${this.pNum}_${colChar}${nextColChar}-${rowChar}`;
+                            } else {
+                                wallMove = `w${this.pNum}_${colChar}-${rowChar}${nextRowChar}`;
+                            }
+
+                            if (wallMove && game.checkMove(wallMove)) {
+                                const clone = game.clone();
+                                clone.move(wallMove);
+
+                                const newSelf = clone.shortestPath(this.pNum);
+                                const newOp = clone.shortestPath(this.pNum === 1 ? 2 : 1);
+
+                                const newLenSelf = newSelf?.length;
+                                const newLenOp = newOp?.length;
+
+                                const score = (newLenOp - lenOpBefore) - (newLenSelf - lenSelfBefore);
+                                if (score > bestScore) {
+                                    bestScore = score;
+                                    bestMove = wallMove;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return bestMove ?? this.randomMove(game);
+    }
+
 }
 
 export default Player;
