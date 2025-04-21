@@ -15,6 +15,7 @@ class Game {
         this.mod = info.mod || {};
         this.t1 = 0;
         this.t2 = 0;
+        this.winner = null; // 1 or 2
         this.startTime = Date.now();
         this.lastMoveTime = Date.now();
         this.isP1Turn = true;
@@ -191,19 +192,19 @@ class Game {
         const moveRegex = /^[p][1-4]_\d{1,2}-\d{1,2}$|^[w][1-4]_[a-zA-Z]{1,2}-[a-zA-Z]{1,2}$/;
         if (turnIsImportant) {
             if ((this.isP1Turn && type[1] !== '1') || (!this.isP1Turn && type[1] !== '2')) {
-                //console.log("Not Your Turn");
+                // console.log("Not Your Turn");
                 return false;
             }
         }
 
         if (this.isGameOver) {
-            //console.log("Game Over");
+            // console.log("Game Over");
             return false;
         } else if (!moveRegex.test(move)) {
-            //console.log("Invalid Move Format");
+            console.log("Invalid Move Format");
             return false;
         } else if (this.p1.position.length === 0 || this.p2.position.length === 0) {
-            //console.log("Player Position Not Found");
+            console.log("Player Position Not Found");
             return false;
         } else if (type[0] === 'p') { // check pawn move ex. p1_2-6
             if (from.length === 0) {
@@ -215,33 +216,33 @@ class Game {
 
             if (turnIsImportant) {
                 if (this.board[to[0]][to[1]] !== 'e') { // check if the cell is empty
-                    console.log("Invalid Move: cell not empty");
+                    // console.log("Invalid Move: cell not empty");
                     return false;
                 } else if (to[0] === opponent.position[0] && to[1] === opponent.position[1]) {
-                    console.log("Invalid Move: opponent position");
+                    // console.log("Invalid Move: opponent position");
                     return false;
                 }
             }
 
-            // //console.log("checkfrom", from, 'to', to, 'op', opponent.position);
+            // console.log("checkfrom", from, 'to', to, 'op', opponent.position);
             if (from[0] === to[0] && from[1] === to[1]) {
-                console.log("Invalid Move: same position");
+                // console.log("Invalid Move: same position");
                 return false;
             }
             else if ((Math.abs(from[0] - to[0]) > 1) || (Math.abs(from[1] - to[1]) > 1)) {
                 // stop the move more than one step execpt if the opponent is in the middle
                 const move2 = (Math.abs(from[0] - to[0]) > 1 && opponent.position[0] === Math.abs(from[0] + to[0]) / 2 && opponent.position[1] === from[1] && opponent.position[1] === to[1])
                     || (Math.abs(from[1] - to[1]) > 1 && opponent.position[1] === Math.abs(from[1] + to[1]) / 2 && opponent.position[0] === from[0] && opponent.position[0] === to[0]);
-                if (!move2) {
+                if (!move2 || this.checkNotWallBlock(opponent.position, to) === false) {
                     // console.log("Invalid Move: more than one step");
                     return false;
                 }
             } else if ((Math.abs(from[0] - to[0]) >= 1 && Math.abs(from[1] - to[1]) >= 1)) { // stop the diagonal move
-                console.log("Invalid Move: no diagonal moves");
+                // console.log("Invalid Move: no diagonal moves");
                 return false;
             }
             else if (to[0] < 0 || to[0] >= this.boardSize || to[1] < 0 || to[1] >= this.boardSize) {
-                console.log("Invalid Move: out of board");
+                // console.log("Invalid Move: out of board");
                 return false;
             }
 
@@ -452,12 +453,14 @@ class Game {
     isWin() {
         if (this.p1.position[0] === this.boardSize - 1) {
             this.isGameOver = true;
-            console.log("Player 1 Win");
+            this.winner = 1;
+            // console.log("Player 1 Win");
             this.isGameOver = true;
             return true;
         } else if (this.p2.position[0] === 0) {
             this.isGameOver = true;
-            console.log("Player 2 Win");
+            this.winner = 2;
+            // console.log("Player 2 Win");
             this.isGameOver = true;
             return true;
         }
@@ -478,10 +481,6 @@ class Game {
             [1, 0],  // down
             [0, -1], // left
             [-1, 0],  // up
-            [0, 2],  // right t
-            [2, 0],  // down t
-            [0, -2], // left t
-            [-2, 0]  // up t
         ];
 
         while (queue.length > 0) {
@@ -499,18 +498,13 @@ class Game {
 
             for (let [dx, dy] of directions) {
                 const next = [current[0] + dx, current[1] + dy];
-                // console.log('current', current, 'next', next);
-
                 // Bounds check
                 if (
                     next[0] >= 0 && next[0] < this.boardSize &&
                     next[1] >= 0 && next[1] < this.boardSize
                 ) {
                     const moveStr = `p${playerNum}_${next[0] + 1}-${next[1] + 1}`;
-                    // console.log("moveStr", moveStr, 'position', playerNum === 1 ? this.p1.position : this.p2.position);
-
                     if (this.checkMove(moveStr, playerPosition, next, false)) {
-                        // make the player position here temporarily
                         queue.push([next, [...path, next]]);
                     }
                 }

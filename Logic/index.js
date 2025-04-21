@@ -107,17 +107,23 @@ function gameMenu(game) {
 
 
 const g1 = new Game({
-    p1: { name: "Player 1", nWalls: 15 },
-    p2: { name: "Player 2", difficulty: "easy" },
-    boardSize: 5,
+    p1: { name: "Player 1" },
+    p2: { name: "Player 2", difficulty: "easy", position: null },
+    boardSize: 9,
 });
 
 
 g1.printAllBoard();
-// g1.move("w1_ac-e");
+// g1.move("w1_c-ce");
 // g1.move("w2_df-e");
+// g1.move("p1_3-3");
+// g1.printAllBoard();
 // console.log(g1.shortestPath(1));
-// g1.move(g1.p1.mediumMove(g1));
+// g1.move("p1_2-3");
+// g1.move("p2_3-3");
+// console.log(g1.checkMove("p2_1-3", g1.p2.position, [], false));
+g1.printAllBoard();
+// g1.move(g1.move("p2_4-3"));
 // g1.move(g1.p1.getEasyMove(g1));
 // console.log(g1.p1);
 // console.log('path', g1.shortestPath(1));
@@ -125,11 +131,18 @@ g1.printAllBoard();
 // console.log(g1.p1);
 
 while (g1.isGameOver === false) {
-    g1.move(g1.p1.mediumMove(g1));
+    g1.move(g1.p1.getEasyMove(g1));
     g1.printAllBoard();
-    g1.move(g1.p2.getEasyMove(g1));
+    g1.move(g1.p2.theBestMove(g1));
     g1.printAllBoard();
 }
+console.log("Game Over", g1.winner);
+
+// console.log(g1.p1.theBestMove(g1));
+// console.log('finito');
+
+// console.log(g1.p2.getValidMoves(g1));
+// console.log(g1.p2.evaluateBoard(g1));
 // g1.printAllBoard();
 
 
