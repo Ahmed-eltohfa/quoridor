@@ -10,6 +10,7 @@ out/
 # Ignore package manager directories
 node_modules/
 vendor/
+quoridor-game-engine/
 
 # Ignore log files
 *.log

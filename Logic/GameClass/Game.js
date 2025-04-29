@@ -8,7 +8,6 @@ class Game {
 
     init(info) {
         // attributes
-        // console.log(info);
         this.p1 = new Player(info.p1.name, 1, info.p1.isComputer, info.p1.difficulty, info.p1.nWalls);
         this.p2 = new Player(info.p2.name, 2, info.p2.isComputer, info.p2.difficulty, info.p2.nWalls);
         this.boardSize = info.boardSize || 9;
@@ -21,6 +20,7 @@ class Game {
         this.isP1Turn = true;
         this.moves = [];
         this.isGameOver = false;
+        this.undoStack = [];
         // initialize the board and walls
         this.board = Array(this.boardSize).fill('e'.repeat(this.boardSize));
         this.walls = Array.from({ length: this.boardSize + 1 }, () =>
@@ -31,7 +31,6 @@ class Game {
                 right: false
             }))
         );
-
         this.p1.position = info.p1.position || [0, Math.floor(this.boardSize / 2)];
         this.p2.position = info.p2.position || [this.boardSize - 1, Math.floor(this.boardSize / 2)];
         this.board[this.p1.position[0]] = this.board[this.p1.position[0]].substring(0, this.p1.position[1]) + '1' + this.board[this.p1.position[0]].substring(this.p1.position[1] + 1);
@@ -359,6 +358,7 @@ class Game {
             return false;
         }
         if (this.checkMove(move)) {
+            this.undoStack.push(this.clone());
             // add the time to the player
             const now = Date.now();
             const elapsed = now - this.lastMoveTime; // in milliseconds
@@ -530,6 +530,29 @@ class Game {
         newGame.startTime = this.startTime;
         newGame.lastMoveTime = this.lastMoveTime;
         return newGame;
+    }
+
+    undo() {
+        console.log("hello");
+        if (this.undoStack.length > 0) {
+            const previousState = this.undoStack.pop();
+
+            // Now restore the previousState fields
+            this.p1 = { ...previousState.p1 };
+            this.p2 = { ...previousState.p2 };
+            this.board = [...previousState.board];
+            this.walls = previousState.walls.map(row => row.map(cell => ({ ...cell })));
+            this.isP1Turn = previousState.isP1Turn;
+            this.t1 = previousState.t1;
+            this.t2 = previousState.t2;
+            this.startTime = previousState.startTime;
+            this.lastMoveTime = previousState.lastMoveTime;
+            this.isGameOver = previousState.isGameOver ?? false;
+
+            console.log("Undo successful.");
+        } else {
+            console.log("Nothing to undo.");
+        }
     }
 }
 

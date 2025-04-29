@@ -1,5 +1,5 @@
 class Player {
-    constructor(name, pNum, isComputer = false, difficulty = null, nWalls = 10) {
+    constructor(name, pNum, isComputer = false, difficulty = 0, nWalls = 10) {
         this.name = name;
         this.position = null;
         this.isComputer = isComputer;
@@ -8,19 +8,22 @@ class Player {
         this.pNum = pNum; // player number (1 or 2)
     }
 
-    // return this.randomMove(game);
     smartMove(game) {
-        // implement a smarter AI strategy (e.g., BFS, minimax)
-        if (this.difficulty === "easy") {
-            // Placeholder for easy AI logic
-            return this.randomMove(game); // Replace with actual logic
-        } else if (this.difficulty === "medium") {
-            // Placeholder for medium AI logic
-            return this.randomMove(game); // Replace with actual logic
-        }
-        else if (this.difficulty === "hard") {
-            // Placeholder for hard AI logic
-            return this.randomMove(game); // Replace with actual logic
+        const rank = this.difficulty * Math.random() * 125;
+        console.log(rank);
+
+        if (rank <= 100) {
+            return this.randomMove(game);
+        } else if (rank <= 200) {
+            return this.getEasyMove(game);
+        } else if (rank <= 300) {
+            return this.mediumMove(game);
+        } else if (rank <= 500) {
+            return this.hardMove(game);
+        } else if (rank <= 750) {
+            return this.mediumMove(game, 11);
+        } else {
+            return this.theBestMove(game);
         }
     }
 
