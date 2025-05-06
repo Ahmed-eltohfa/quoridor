@@ -62,6 +62,69 @@ class GameManager {
         return this.games.get(roomId);
     }
 
+    getGameBySocket(socket) {
+        for (const [roomId, gameData] of this.games.entries()) {
+            if (gameData.players.some(player => player.socket.id === socket.id)) {
+                return { roomId, ...gameData };
+            }
+        }
+        return null;
+    }
+
+    handleMove(socket, { move }) {
+        // console.log(socket, move);
+
+        const gameData = this.getGameBySocket(socket);
+        if (!gameData) {
+            socket.emit("error", { success: false, message: "Game not found." });
+            return;
+        }
+
+        const { game } = gameData;
+        // get if the player is the first or second
+        const playerIndex = gameData.players.findIndex(player => player.socket.id === socket.id);
+        if (playerIndex === -1) {
+            socket.emit("error", { success: false, message: "Player not found." });
+            return;
+        }
+        if (playerIndex + 1 != parseInt(move[1])) {
+            socket.emit("error", { success: false, message: "Not your turn." });
+            return;
+        }
+        game.printAllBoard();
+        const result = game.move(move);
+        console.log(result);
+        game.printAllBoard();
+
+
+        if (!result) {
+            thisbroadcastToRoom(gameData.roomId, "invalidMove", {
+                success: false,
+                message: "Invalid move",
+            });
+            return;
+        }
+
+        if (game.isGameOver) {
+            this.broadcastToRoom(gameData.roomId, "gameOver", {
+                success: true,
+                message: "Game Over",
+                states: game.getGameState(),
+            });
+            this.removeGame(gameData.roomId);
+
+            return;
+        }
+
+        // Broadcast the updated state
+        this.broadcastToRoom(gameData.roomId, "gameUpdated", {
+            success: true,
+            gameState: {
+                move,
+            },
+        });
+    }
+
     removeGame(roomId) {
         this.games.delete(roomId);
     }

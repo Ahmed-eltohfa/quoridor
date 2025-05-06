@@ -16,9 +16,9 @@ const setupGameSocket = (io, socket) => {
         gameManager.handleNewPlayer(socket, player);
     });
 
-    socket.on('movePawn', (data) => {
-        console.log('MovePawn event received:', data);
-        // Forward to your GameManager later
+    socket.on('move', (data) => {
+        console.log('move event received:', data);
+        gameManager.handleMove(socket, data);
     });
 
     socket.on('disconnect', () => {

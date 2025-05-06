@@ -36,6 +36,7 @@ io.on('connection', (socket) => {
     setupGameSocket(io, socket);
 });
 
+// global api point
 app.get('/', (req, res) => {
     res.send("hello from server");
 })
