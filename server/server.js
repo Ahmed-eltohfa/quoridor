@@ -6,6 +6,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 
 import authRoutes from './routes/auth.js';
+import playerRouter from './routes/players.js'
 import setupGameSocket from './sockets/game.js';
 import connectDB from './config/connectdb.js';
 
@@ -29,6 +30,7 @@ connectDB();
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/players', playerRouter);
 
 // Socket.io setup
 io.on('connection', (socket) => {
