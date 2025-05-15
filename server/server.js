@@ -9,6 +9,7 @@ import authRoutes from './routes/auth.js';
 import playerRouter from './routes/players.js'
 import setupGameSocket from './sockets/game.js';
 import connectDB from './config/connectdb.js';
+import socketAuth from './middlewears/socketMiddlewear.js';
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ const io = new SocketIO(server, {
 // Middlewares
 app.use(cors());
 app.use(express.json());
+io.use(socketAuth); // authenticate socket connections
 
 // db connection
 connectDB();

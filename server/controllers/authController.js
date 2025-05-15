@@ -94,3 +94,50 @@ export const logout = async (req, res) => {
     // Client should just delete the token
     res.json({ success: true, message: 'Logged out successfully' });
 };
+
+// PATCH /update
+export const userChange = async (req, res) => {
+    const { avatar, email, password } = req.body;
+    // console.log(req);
+
+    const userId = req.user.id;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+    if (avatar !== undefined) user.avatar = avatar;
+
+    if (email !== undefined && email !== user.email) {
+        const emailTaken = await User.findOne({ email });
+        if (emailTaken) return res.status(400).json({ success: false, message: "Email already in use" });
+        user.email = email;
+    }
+
+    if (password) {
+        const hashed = await bcrypt.hash(password, 10);
+        user.password = hashed;
+    }
+
+    await user.save();
+
+    res.json({ success: true, message: "Settings updated successfully" });
+}
+
+// DELETE /delete
+export const deleteAccount = async (req, res) => {
+    const userId = req.user.id;
+
+    const deleted = await User.findByIdAndDelete(userId);
+    if (!deleted) {
+        return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    res.json({ success: true, message: "Account deleted successfully" });
+};
+
+export const getMe = async (req, res) => {
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+    res.json({ success: true, user });
+};

@@ -1,6 +1,6 @@
 import User from '../models/User.js';
 
-// GET /api/users/:username/profile
+// GET /api/palyer/:id/profile
 export const getUserProfile = async (req, res) => {
     const { id } = req.params;
 
@@ -10,7 +10,7 @@ export const getUserProfile = async (req, res) => {
         return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    const { wins, losses, totalGames, rank, avatar, history, playerSince } = user;
+    const { username, wins, losses, totalGames, rank, avatar, history, playerSince } = user;
 
     res.json({
         success: true,
@@ -26,3 +26,25 @@ export const getUserProfile = async (req, res) => {
         },
     });
 };
+
+export const getLeaderboard = async (req, res) => {
+    const users = await User.find({ isGuest: false })
+        .sort({ rank: -1 })
+        .limit(10)
+        .select('username avatar rank wins totalGames _id');
+
+    if (!users) {
+        return res.status(404).json({ success: false, message: 'No users found' });
+    }
+
+    res.json({
+        success: true,
+        leaderboard: users.map(user => ({
+            username: user.username,
+            rank: user.rank,
+            wins: user.wins,
+            losses: user.losses,
+            totalGames: user.totalGames,
+        })),
+    });
+}
