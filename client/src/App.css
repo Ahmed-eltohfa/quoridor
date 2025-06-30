@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+/* colors: {
+    // Primary Colors
+    'q-primary': '#2563EB',      // Main blue (buttons/links)
+    'q-primary-hover': '#1D4ED8', // Darker blue (hover states)
+    
+    // Backgrounds
+    'q-bg-light': '#F9FAFB',     // Page background
+    'q-bg-card': '#FFFFFF',      // Card backgrounds
+    
+    // Text
+    'q-text-dark': '#1F2937',    // Headers (dark gray)
+    'q-text-medium': '#4B5563',  // Body text
+    'q-text-light': '#6B7280',   // Subtle text
+    
+    // Accents & Status
+    'q-online': '#10B981',       // Online status
+    'q-offline': '#9CA3AF',      // Offline status
+    'q-warning': '#F59E0B',      // Warning yellow
+    'q-error': '#EF4444',        // Error red
+    
+    // Borders/Dividers
+    'q-border': '#E5E7EB',       // Card borders
+    'q-divider': '#F3F4F6',      // Section dividers
+  } */
+@theme {
+    --color-q-primary: #2563EB;
+    --color-q-primary-hover: #1D4ED8;
+    --color-q-bg-light: #F9FAFB;
+    --color-q-bg-card: #FFFFFF;
+    --color-q-text-dark: #1F2937;
+    --color-q-text-medium: #4B5563;
+    --color-q-text-light: #6B7280;
+    --color-q-online: #10B981;
+    --color-q-offline: #9CA3AF;
+    --color-q-warning: #F59E0B;
+    --color-q-error: #EF4444;
+    --color-q-border: #E5E7EB;
+    --color-q-divider: #F3F4F6;
+}
