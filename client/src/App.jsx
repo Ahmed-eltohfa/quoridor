@@ -10,8 +10,36 @@ function App() {
   return (
     <>
     <Nav />
-      <div className='bg-q-primary'>hello</div>
-      <div className='bg-q-primary-hover'>hello</div>
+    <div className='contain mx-2 md:mx-4'>
+      <div className=''>hello</div>
+      <div className=''>hello</div>
+      <div className=''>hello</div>
+      <div className=''>hello</div>
+      <div className=''>hello</div>
+      <div className=''>hello</div>
+      <div className=''>hello</div>
+      <div className=''>hello</div>
+      <div className=''>hello</div>
+      <div className=''>hello</div>
+      <div className=''>hello</div>
+      <div className=''>hello</div>
+      <div className=''>hello</div>
+      <div className=''>hello</div>
+      <div className=''>hello</div>
+      <div className=''>hello</div>
+      <div className=''>hello</div>
+      <div className=''>hello</div>
+      <div className=''>hello</div>
+      <div className=''>hello</div>
+      <div className=''>hello</div>
+      <div className=''>hello</div>
+      <div className=''>hello</div>
+      <div className=''>hello</div>
+      <div className=''>hello</div>
+      <div className=''>hello</div>
+      <div className=''>hello</div>
+      <div className=''>hello</div>
+    </div>
     </>
   )
 }

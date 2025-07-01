@@ -1,41 +1,50 @@
 @import "tailwindcss";
 
-/* colors: {
-    // Primary Colors
-    'q-primary': '#2563EB',      // Main blue (buttons/links)
-    'q-primary-hover': '#1D4ED8', // Darker blue (hover states)
-    
-    // Backgrounds
-    'q-bg-light': '#F9FAFB',     // Page background
-    'q-bg-card': '#FFFFFF',      // Card backgrounds
-    
-    // Text
-    'q-text-dark': '#1F2937',    // Headers (dark gray)
-    'q-text-medium': '#4B5563',  // Body text
-    'q-text-light': '#6B7280',   // Subtle text
-    
-    // Accents & Status
-    'q-online': '#10B981',       // Online status
-    'q-offline': '#9CA3AF',      // Offline status
-    'q-warning': '#F59E0B',      // Warning yellow
-    'q-error': '#EF4444',        // Error red
-    
-    // Borders/Dividers
-    'q-border': '#E5E7EB',       // Card borders
-    'q-divider': '#F3F4F6',      // Section dividers
-  } */
 @theme {
-    --color-q-primary: #2563EB;
-    --color-q-primary-hover: #1D4ED8;
-    --color-q-bg-light: #F9FAFB;
-    --color-q-bg-card: #FFFFFF;
-    --color-q-text-dark: #1F2937;
-    --color-q-text-medium: #4B5563;
-    --color-q-text-light: #6B7280;
-    --color-q-online: #10B981;
-    --color-q-offline: #9CA3AF;
-    --color-q-warning: #F59E0B;
-    --color-q-error: #EF4444;
-    --color-q-border: #E5E7EB;
-    --color-q-divider: #F3F4F6;
+  /* Backgrounds */
+  --color-bg-main: #0e0e11;
+  /* Deep dark background */
+  --color-bg-card: #1a1a1f;
+  /* Card/Dark block background */
+  --color-bg-hero-overlay: #00000080;
+  /* Transparent dark overlay */
+  /*color- Text */
+  --color-text-primary: #ffffff;
+  /* Main white text */
+  --color-text-secondary: #b0b0b8;
+  /* Subtle secondary text */
+  --color-text-muted: #7c7c88;
+  /* Even more muted gray text */
+  /*color- Buttons & Icons */
+  --color-btn-primary: #6c74f5;
+  /* Purple/blue button (New Game) */
+  --color-btn-secondary: #2b2b31;
+  /* Dark secondary button (Join Game) */
+  --color-btn-hover: #818af7;
+  /* Lighter hover version of primary */
+  /*color- Cards & Elements */
+  --color-card-quickmatch: #2b2d40;
+  /* Quick Match card background */
+  --color-card-privateroom: #2f2f33;
+  /* Private Room card background */
+  --color-badge-lock: #dbc39d;
+  /* Beige/wood-like color for lock icon */
+  /*color- Accent colors */
+  --color-accent-online: #4ade80;
+  /* Green for "Online" indicator */
+  --color-accent-offline: #71717a;
+  /* Gray for "Offline" status */
+  --color-accent-invite: #373737;
+  /* Dark neutral for invite button */
+  /*color- Friends */
+  --color-friend-name: #ffffff;
+  --color-friend-status: #9ca3af;
+  /*color- Game Card Statuses */
+  --color-status-won: #4ade80;
+  --color-status-lost: #f87171;
+  --color-status-online: #38bdf8;
+}
+
+body {
+  @apply bg-bg-main text-text-primary font-sans;
 }
