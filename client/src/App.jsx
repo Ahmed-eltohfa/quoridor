@@ -13,14 +13,14 @@ import Waiting from './pages/Waiting';
 import Settings from './pages/Settings';
 import LeaderBoard from './pages/LeaderBoard';
 import Game from './pages/Game';
+import Footer from './components/Footer.jsx';
 
 function App() {
 
   return (
     <>
     <Nav />
-    <div className='contain mx-2 md:mx-4 lg:mx-10 xl:mx-12 mt-16 pt-1'>
-      <h1>hello</h1>
+    <div className='contain mx-2 md:mx-4 lg:mx-8 xl:mx-10 mt-16 pt-1'>
       <Routes>
           <Route exact path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
@@ -36,6 +36,7 @@ function App() {
           <Route element={<NotFound />} />
       </Routes>
     </div>
+    <Footer />
     </>
   )
 }

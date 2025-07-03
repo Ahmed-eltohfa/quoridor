@@ -67,7 +67,7 @@ const Navbar = () => {
 
 
         {/* Desktop Nav Links */}
-        <div className="hidden md:flex space-x-6">
+        <div className="hidden md:flex space-x-6 lg:-translate-x-[5%]">
             {navItems.map((item) => (
             <Link
                 key={item.path}
