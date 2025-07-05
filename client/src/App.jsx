@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Route, Routes } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux'
 import Nav from './components/Nav';
 import './App.css'
 import Home from './pages/Home.jsx';
@@ -33,7 +34,7 @@ function App() {
           <Route path="/settings" element={<Settings />} />
           <Route path="/leaderboard" element={<LeaderBoard />} />
           <Route path="/game" element={<Game />} />
-          <Route element={<NotFound />} />
+          <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
     <Footer />

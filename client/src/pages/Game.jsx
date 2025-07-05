@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux'
 import { FaBolt, FaUsers, FaRobot } from 'react-icons/fa';
 import boardImg from '../assets/board.png'
+import { updateMode } from '../rtk/slices/settingsSlice';
 
 export default function Game() {
-  const [selectedMode, setSelectedMode] = useState('');
   const [localConfig, setLocalConfig] = useState({
     player1: '',
     player2: '',
@@ -16,13 +17,17 @@ export default function Game() {
   const handleStartLocalGame = () => alert('Starting local game...');
   const handleStartAiGame = () => alert(`Starting AI game on ${aiLevel} difficulty...`);
 
+  const settingsState = useSelector(state=>state.settings.gameMode);
+  const dispatch = useDispatch();
+
+
   return (
     <div className="text-white min-h-screen flex flex-col justify-between bg-[#0e0e11] px-4 py-8">
       <div className="flex flex-col items-center space-y-6">
         {/* Top Game Mode Buttons */}
         <div className="flex flex-wrap justify-center gap-8">
           <button
-            onClick={() => setSelectedMode('quick')}
+            onClick={() => dispatch(updateMode('quick'))}
             className="bg-blue-600 hover:bg-blue-700 transition-all w-32 h-32 rounded-xl flex flex-col items-center justify-center gap-2 shadow-lg cursor-pointer text-white text-sm"
           >
             <FaBolt size={28} />
@@ -30,7 +35,7 @@ export default function Game() {
           </button>
 
           <button
-            onClick={() => setSelectedMode('local')}
+            onClick={() => dispatch(updateMode('local'))}
             className="bg-purple-600 hover:bg-purple-700 transition-all w-32 h-32 rounded-xl flex flex-col items-center justify-center gap-2 shadow-lg cursor-pointer text-white text-sm"
           >
             <FaUsers size={28} />
@@ -38,7 +43,7 @@ export default function Game() {
           </button>
 
           <button
-            onClick={() => setSelectedMode('ai')}
+            onClick={() => dispatch(updateMode('ai'))}
             className="bg-yellow-600 hover:bg-yellow-700 transition-all w-32 h-32 rounded-xl flex flex-col items-center justify-center gap-2 shadow-lg cursor-pointer text-white text-sm"
           >
             <FaRobot size={28} />
@@ -48,14 +53,14 @@ export default function Game() {
 
         {/* Bottom Panel - Dynamic Content */}
         <div className="w-full max-w-2xl mt-10 p-6 bg-[#1c1c1f] rounded-xl shadow-xl transition-all duration-500 animate-fade-in">
-          {!selectedMode && (
+          {!settingsState && (
             <div className="text-center text-gray-400">
               <h2 className="text-xl font-semibold text-white mb-2">Choose a Game Mode</h2>
               <p>Select how you want to play: online with others, locally, or against AI.</p>
             </div>
           )}
 
-          {selectedMode === 'quick' && (
+          {settingsState === 'quick' && (
             <div className="space-y-4 animate-fade-in transition-opacity duration-500">
               <h2 className="text-xl font-semibold">Quick Match</h2>
               <p className="text-gray-400">Join a public game instantly with a random player.</p>
@@ -68,7 +73,7 @@ export default function Game() {
             </div>
           )}
 
-          {selectedMode === 'local' && (
+          {settingsState === 'local' && (
             <div className="space-y-4 animate-fade-in transition-opacity duration-500">
               <h2 className="text-xl font-semibold">Local Multiplayer Setup</h2>
               <div className="grid gap-4">
@@ -125,7 +130,7 @@ export default function Game() {
             </div>
           )}
 
-          {selectedMode === 'ai' && (
+          {settingsState === 'ai' && (
             <div className="space-y-4 animate-fade-in transition-opacity duration-500">
               <h2 className="text-xl font-semibold">Play vs AI</h2>
               <p className="text-gray-400">Select AI difficulty and start the game.</p>
