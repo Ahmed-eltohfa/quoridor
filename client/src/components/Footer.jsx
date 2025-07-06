@@ -33,17 +33,17 @@ export default function Footer() {
         {/* Contact & Social */}
         <div className="flex flex-col gap-2">
           <h3 className="text-white font-medium mb-2">Connect</h3>
-          <a href="mailto:support@quoridor.app" className="flex items-center gap-2 hover:text-white transition">
+          <a href="mailto:eltohfa01@gmail.com" className="flex items-center gap-2 hover:text-white transition">
             <FaEnvelope /> Contact Support
           </a>
-          <a href="https://github.com" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-white transition">
+          <a href="https://github.com/Ahmed-eltohfa" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-white transition">
             <FaGithub /> GitHub
           </a>
           <a href="#" className="flex items-center gap-2 hover:text-white transition">
             <FaShieldAlt /> Privacy Policy
           </a>
-          <a href="#" className="flex items-center gap-2 hover:text-white transition">
-            <FaFileContract /> Terms of Service
+          <a href="/about" className="flex items-center gap-2 hover:text-white transition">
+            <FaFileContract /> About
           </a>
         </div>
 
