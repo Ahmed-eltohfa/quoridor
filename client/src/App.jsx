@@ -15,6 +15,7 @@ import Settings from './pages/Settings';
 import LeaderBoard from './pages/LeaderBoard';
 import Game from './pages/Game';
 import Footer from './components/Footer.jsx';
+import Play from './pages/Play.jsx';
 
 function App() {
 
@@ -34,6 +35,7 @@ function App() {
           <Route path="/settings" element={<Settings />} />
           <Route path="/leaderboard" element={<LeaderBoard />} />
           <Route path="/game" element={<Game />} />
+          <Route path="/play" element={<Play />} />
           <Route path="*" element={<NotFound />} />
       </Routes>
     </div>

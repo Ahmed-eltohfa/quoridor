@@ -3,19 +3,22 @@ import { useSelector, useDispatch } from 'react-redux'
 import { FaBolt, FaUsers, FaRobot } from 'react-icons/fa';
 import boardImg from '../assets/board.png'
 import { updateMode } from '../rtk/slices/settingsSlice';
+import { useNavigate } from 'react-router-dom';
 
 export default function Game() {
+
   const [localConfig, setLocalConfig] = useState({
     player1: '',
     player2: '',
     boardSize: 9,
     walls: 10,
   });
+  const navigate = useNavigate();
   const [aiLevel, setAiLevel] = useState('medium');
 
-  const handleStartQuickMatch = () => alert('Starting Quick Match...');
-  const handleStartLocalGame = () => alert('Starting local game...');
-  const handleStartAiGame = () => alert(`Starting AI game on ${aiLevel} difficulty...`);
+  const handleStartQuickMatch = () => navigate('/play') ;
+  const handleStartLocalGame = () => navigate('/play');
+  const handleStartAiGame = () => navigate('/play');
 
   const settingsState = useSelector(state=>state.settings.gameMode);
   const dispatch = useDispatch();

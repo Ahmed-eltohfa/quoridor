@@ -106,3 +106,7 @@ body {
 .box-shadow {
   box-shadow: 0px 8px 15px 1px #6c74f590;
 }
+
+.cell_background {
+  background-image: url('../src/assets/wooden-texture.png');
+}
