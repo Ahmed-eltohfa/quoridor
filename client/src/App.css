@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+button {
+  cursor: pointer;
+}
+
 @theme {
   /* Backgrounds */
   --color-bg-main: #0e0e11;
@@ -116,5 +120,251 @@ body {
 }
 
 .cell-shadow {
-  box-shadow: 0px 0px 9px 1px black;
+  box-shadow: 0px 5px 11px 1px rgba(0, 0, 0, 0.801);
+}
+
+.css-pawn {
+  position: relative;
+  width: 60%;
+  aspect-ratio: 1 / 2;
+  /* maintain pawn-like height */
+  margin: auto;
+}
+
+.pawn {
+  position: relative;
+  width: 60%;
+  aspect-ratio: 1 / 2;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  max-height: 100%;
+}
+
+/* Pawn Head */
+.pawn::before {
+  content: "";
+  width: 55%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fff2, transparent 70%), var(--pawn-color);
+  box-shadow: inset 0 0 4px #0006, 0 1px 2px #0004;
+  margin-bottom: 4%;
+}
+
+/* Pawn Body */
+.pawn::after {
+  content: "";
+  width: 80%;
+  height: 60%;
+  border-radius: 50% / 30%;
+  background: linear-gradient(to bottom, var(--pawn-color), #0005);
+  box-shadow: inset 0 0 6px #0004, 0 2px 4px #0005;
+}
+
+/* Color Variants */
+.pawn-green {
+  --pawn-color: #1f4028;
+}
+
+.pawn-orange {
+  --pawn-color: #e35615;
+}
+
+/* wall */
+.wall {
+  position: relative;
+  background-color: orange;
+  z-index: 50;
+}
+
+.wall::before,
+.wall::after {
+  content: "";
+  position: absolute;
+  background: red;
+  /* box-shadow: inset 0 0 2px #0008, 0 1px 2px #0006;
+  border-radius: 2px; */
+}
+
+.wall-h::before {
+  width: 505%;
+  height: 100%;
+  transform: translateX(-40%);
+}
+
+
+.wall-v::before {
+  width: 100%;
+  height: 505%;
+  transform: translatey(-40%);
+}
+
+
+.wall-r::before {
+  top: 0;
+  left: 50%;
+  width: 6px;
+  height: 100%;
+  transform: translateX(-50%);
+}
+
+.wall-r::after {
+  top: 50%;
+  left: 0;
+  width: 50%;
+  height: 6px;
+  transform: translateY(-50%);
+}
+
+.wall-l::before {
+  top: 0;
+  left: 50%;
+  width: 6px;
+  height: 100%;
+  transform: translateX(-50%);
+}
+
+.wall-l::after {
+  top: 50%;
+  right: 0;
+  width: 50%;
+  height: 6px;
+  transform: translateY(-50%);
+}
+
+.wall-t::before {
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  transform: translateY(-50%);
+}
+
+.wall-t::after {
+  top: 0;
+  left: 50%;
+  width: 6px;
+  height: 50%;
+  transform: translateX(-50%);
+}
+
+.wall-b::before {
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  transform: translateY(-50%);
+}
+
+.wall-b::after {
+  bottom: 0;
+  left: 50%;
+  width: 6px;
+  height: 50%;
+  transform: translateX(-50%);
+}
+
+.wall-c::before {
+  top: 0;
+  left: 50%;
+  width: 6px;
+  height: 100%;
+  transform: translateX(-50%);
+}
+
+.wall-c::after {
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  transform: translateY(-50%);
+}
+
+.wall-dr::before {
+  top: 0;
+  left: 50%;
+  width: 6px;
+  height: 50%;
+  transform: translateX(-50%);
+}
+
+.wall-dr::after {
+  top: 50%;
+  left: 0;
+  width: 50%;
+  height: 6px;
+  transform: translateY(-50%);
+}
+
+.wall-dl::before {
+  top: 0;
+  left: 50%;
+  width: 6px;
+  height: 50%;
+  transform: translateX(-50%);
+}
+
+.wall-dl::after {
+  top: 50%;
+  right: 0;
+  width: 50%;
+  height: 6px;
+  transform: translateY(-50%);
+}
+
+.wall-ul::before {
+  bottom: 0;
+  left: 50%;
+  width: 6px;
+  height: 50%;
+  transform: translateX(-50%);
+}
+
+.wall-ul::after {
+  top: 50%;
+  right: 0;
+  width: 50%;
+  height: 6px;
+  transform: translateY(-50%);
+}
+
+.wall-ur::before {
+  bottom: 0;
+  left: 50%;
+  width: 6px;
+  height: 50%;
+  transform: translateX(-50%);
+}
+
+.wall-ur::after {
+  top: 50%;
+  left: 0;
+  width: 50%;
+  height: 6px;
+  transform: translateY(-50%);
+}
+
+.wall-u::before {
+  width: 100%;
+  height: 200%;
+}
+
+.wall-d::before {
+  width: 100%;
+  height: 200%;
+  transform: translatey(-50%);
+}
+
+.wall-l0::before {
+  width: 200%;
+  height: 100%;
+}
+
+.wall-r0::before {
+  width: 200%;
+  height: 100%;
+  transform: translateX(-50%);
 }

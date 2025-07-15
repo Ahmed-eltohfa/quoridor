@@ -1,21 +1,27 @@
 export default function WallNode({ walls }) {
-    const num = Object.values(walls).filter(Boolean).length;
-
+    // const num = Object.values(walls).filter(Boolean).length;
+    function getWallSymbol(wall) {
+        const { up, down, left, right } = wall;
+        if (up && down && left && right) return 'c'; // center ┼
+        else if (up && down && left) return 'r';     // ┤
+        else if (up && down && right) return 'l';    // ├
+        else if (left && right && up) return 'b';    // ┴
+        else if (left && right && down) return 't';  // ┬
+        else if (left && right) return 'h';          // ─
+        else if (up && down) return 'v';             // │
+        else if (up && left) return 'dr';            // ┘
+        else if (up && right) return 'dl';           // └
+        else if (down && right) return 'ul';         // ┌
+        else if (down && left) return 'ur';          // ┐
+        else if (up) return 'd';                     // ╵
+        else if (down) return 'u';                   // ╷
+        else if (left) return 'r0';                  // ╴
+        else if (right) return 'l0';                 // ╶
+        else return '.';                             // Empty
+    }
+    
     
     return (
-        <div className={`relative md:w-4 md:h-4 h-2 w-2 ${num > 1 ? 'bg-amber-600' : ''}`}>
-            {walls.up && (
-                <div className="absolute top-0 left-1/2 w-1 h-4 md:w-3 md:h-6 bg-yellow-800 -translate-y-full -translate-x-1/2" />
-            )}
-            {walls.down && (
-                <div className="absolute bottom-0 left-1/2 w-1 h-4 md:w-3 md:h-6 bg-blue-800 translate-y-full -translate-x-1/2" />
-            )}
-            {walls.left && (
-                <div className="absolute left-0 top-1/2 h-1 w-4 md:h-3 md:w-6 bg-green-900 -translate-x-full -translate-y-1/2" />
-            )}
-            {walls.right && (
-                <div className="absolute right-0 top-1/2 h-1 w-4 md:h-3 md:w-6 bg-red-700 translate-x-full -translate-y-1/2" />
-            )}
-        </div>
+        <div className={`md:w-4 md:h-4 h-2 w-2 wall wall-${getWallSymbol(walls)}`}></div>
     );
 }
