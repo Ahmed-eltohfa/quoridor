@@ -204,147 +204,105 @@ body {
 
 
 .wall-r::before {
-  top: 0;
-  left: 50%;
-  width: 6px;
-  height: 100%;
-  transform: translateX(-50%);
+  width: 100%;
+  height: 505%;
+  transform: translatey(-40%);
 }
 
 .wall-r::after {
-  top: 50%;
-  left: 0;
-  width: 50%;
-  height: 6px;
-  transform: translateY(-50%);
+  width: 200%;
+  height: 100%;
+  transform: translateX(-50%);
 }
 
 .wall-l::before {
-  top: 0;
-  left: 50%;
-  width: 6px;
-  height: 100%;
-  transform: translateX(-50%);
+  width: 100%;
+  height: 505%;
+  transform: translatey(-40%);
 }
 
 .wall-l::after {
-  top: 50%;
-  right: 0;
-  width: 50%;
-  height: 6px;
-  transform: translateY(-50%);
+  width: 200%;
+  height: 100%;
 }
 
 .wall-t::before {
-  top: 50%;
-  left: 0;
-  width: 100%;
-  height: 6px;
-  transform: translateY(-50%);
+  width: 505%;
+  height: 100%;
+  transform: translateX(-40%);
 }
 
 .wall-t::after {
-  top: 0;
-  left: 50%;
-  width: 6px;
-  height: 50%;
-  transform: translateX(-50%);
+  width: 100%;
+  height: 200%;
 }
 
 .wall-b::before {
-  top: 50%;
-  left: 0;
-  width: 100%;
-  height: 6px;
-  transform: translateY(-50%);
+  width: 505%;
+  height: 100%;
+  transform: translateX(-40%);
 }
 
 .wall-b::after {
-  bottom: 0;
-  left: 50%;
-  width: 6px;
-  height: 50%;
-  transform: translateX(-50%);
+  width: 100%;
+  height: 200%;
+  transform: translatey(-50%);
 }
 
 .wall-c::before {
-  top: 0;
-  left: 50%;
-  width: 6px;
-  height: 100%;
-  transform: translateX(-50%);
+  width: 100%;
+  height: 505%;
+  transform: translatey(-40%);
 }
 
 .wall-c::after {
-  top: 50%;
-  left: 0;
-  width: 100%;
-  height: 6px;
-  transform: translateY(-50%);
+  width: 505%;
+  height: 100%;
+  transform: translateX(-40%);
 }
 
 .wall-dr::before {
-  top: 0;
-  left: 50%;
-  width: 6px;
-  height: 50%;
+  width: 200%;
+  height: 100%;
   transform: translateX(-50%);
 }
 
 .wall-dr::after {
-  top: 50%;
-  left: 0;
-  width: 50%;
-  height: 6px;
-  transform: translateY(-50%);
+  width: 100%;
+  height: 200%;
+  transform: translatey(-50%);
 }
 
 .wall-dl::before {
-  top: 0;
-  left: 50%;
-  width: 6px;
-  height: 50%;
-  transform: translateX(-50%);
+  width: 200%;
+  height: 100%;
 }
 
 .wall-dl::after {
-  top: 50%;
-  right: 0;
-  width: 50%;
-  height: 6px;
-  transform: translateY(-50%);
+  width: 100%;
+  height: 200%;
+  transform: translatey(-50%);
 }
 
 .wall-ul::before {
-  bottom: 0;
-  left: 50%;
-  width: 6px;
-  height: 50%;
-  transform: translateX(-50%);
+  width: 200%;
+  height: 100%;
 }
 
 .wall-ul::after {
-  top: 50%;
-  right: 0;
-  width: 50%;
-  height: 6px;
-  transform: translateY(-50%);
+  width: 100%;
+  height: 200%;
 }
 
 .wall-ur::before {
-  bottom: 0;
-  left: 50%;
-  width: 6px;
-  height: 50%;
+  width: 200%;
+  height: 100%;
   transform: translateX(-50%);
 }
 
 .wall-ur::after {
-  top: 50%;
-  left: 0;
-  width: 50%;
-  height: 6px;
-  transform: translateY(-50%);
+  width: 100%;
+  height: 200%;
 }
 
 .wall-u::before {
@@ -367,4 +325,22 @@ body {
   width: 200%;
   height: 100%;
   transform: translateX(-50%);
+}
+
+@media (max-width: 768px) {
+
+  .wall-h::before,
+  .wall-b::before,
+  .wall-t::before {
+    width: 1600%;
+    transform: translateX(-50%);
+  }
+
+  .wall-v::before,
+  .wall-l::before,
+  .wall-c::before,
+  .wall-r::before {
+    height: 1600%;
+    transform: translateY(-50%);
+  }
 }

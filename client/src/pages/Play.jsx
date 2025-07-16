@@ -93,7 +93,7 @@ function Play() {
             {renderHorizontalWallStack(game.current.p2.nWalls, '#facc15')}
             {/* Game Board */}
             <div
-                className="grid gap-0 bg-[#2b2b2b] p-2 md:p-8 rounded-lg board_background bg-cover mt-5 mb-8"
+                className="grid gap-0 bg-[#2b2b2b] px-4 py-6 md:px-8 md:py-8 rounded-lg board_background bg-cover mt-5 mb-8"
                 style={{
                     gridTemplateColumns: `repeat(${size + 1}, auto)`
                 }}
