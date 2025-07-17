@@ -1,5 +1,5 @@
 export default function WallNode({ walls }) {
-    // const num = Object.values(walls).filter(Boolean).length;
+    const num = Object.values(walls).filter(Boolean).length;
     function getWallSymbol(wall) {
         const { up, down, left, right } = wall;
         if (up && down && left && right) return 'c'; // center ┼
@@ -22,6 +22,6 @@ export default function WallNode({ walls }) {
     
     
     return (
-        <div className={`md:w-4 md:h-4 h-1 w-1 wall wall-${getWallSymbol(walls)}`}></div>
+        <div className={`md:w-4 md:h-4 h-1 w-1 wall ${num>0 ? 'wall-put':''} wall-${getWallSymbol(walls)}`}></div>
     );
 }

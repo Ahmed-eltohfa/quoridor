@@ -68,7 +68,6 @@ function Play() {
 
     return (
         <div className="min-h-screen bg-[#0e0e11] text-white py-12 flex flex-col items-center">
-            <h1 className="text-2xl font-bold mb-6">Quoridor Game</h1>
             {/* Player HUD */}
             <div className="w-full max-w-6xl flex justify-between items-center px-4">
                 <div className="flex items-center gap-4">
