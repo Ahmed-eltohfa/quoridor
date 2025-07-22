@@ -4,21 +4,11 @@ import { Game } from 'quoridor-game-engine'
 import Cell from './../components/Cell';
 import WallNode from '../components/WallNode';
 import avatar from '../assets/avatar1.png'
+import { useDispatch } from 'react-redux';
+import { updateValidMoves } from '../rtk/slices/gameSlice';
 
 function Play() {
-    
-    // console.log(JSON.stringify(newGame));
-    
-    // return (
-    // <div>Play</div>
-    // )
-    // const newGame = new Game({
-    //     p1: { name: 'testone' },
-    //     p2: { name: 'testtwo' },
-    //     boardSize: 9,
-    // });
-    // const [game, setGame] = useState(newGame);
-    // console.log(game);
+    const dispatch = useDispatch();
 
     const game = useRef(new Game({
         p1: { name: 'testone' },
@@ -56,7 +46,7 @@ function Play() {
             if (i === size) break; // Skip the last row for walls
             for (let j = 0; j < size; j++) {
                 const key = `c-${i}-${j}`;
-                grid.push(<Cell key={key} player={game.current.board[i][j]} offset={j} size={size}/>);
+                grid.push(<Cell key={key} player={game.current.board[i][j]} offset={j} size={size} game={game} position={ {i, j} } triggerRender={triggerRender} />);
             }
             grid.push(<div key={`end-${i}`} className="w-0 h-0" />); // Empty cell at the end of each row
         }
@@ -67,7 +57,7 @@ function Play() {
     console.log('render')
 
     return (
-        <div className="min-h-screen bg-[#0e0e11] text-white py-12 flex flex-col items-center">
+        <div className="min-h-screen bg-[#0e0e11] text-white py-6 flex flex-col items-center">
             {/* Player HUD */}
             <div className="w-full max-w-6xl flex justify-between items-center px-4">
                 <div className="flex items-center gap-4">
@@ -92,7 +82,7 @@ function Play() {
             {renderHorizontalWallStack(game.current.p2.nWalls, '#facc15')}
             {/* Game Board */}
             <div
-                className="grid gap-0 bg-[#2b2b2b] px-4 py-6 md:px-8 md:py-8 rounded-lg board_background bg-cover mt-5 mb-8"
+                className="grid gap-0 bg-[#2b2b2b] px-1 py-3 md:px-6 md:py-6 rounded-lg board_background bg-cover mt-3 mb-6"
                 style={{
                     gridTemplateColumns: `repeat(${size + 1}, auto)`
                 }}
@@ -109,9 +99,9 @@ function Play() {
                         // Handle the move submission logic here
                         console.log(`Move entered: ${e.target.value}`);
                         game.current.move(`${e.target.value}`)
+                        dispatch(updateValidMoves([]));
                         triggerRender();
                         console.log(game);
-                        console.log(game.current.shortestPath(1));
                         
                         e.target.value = ''; // Clear the input after submission
                     }
