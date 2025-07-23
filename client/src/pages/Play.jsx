@@ -1,4 +1,6 @@
 import React from 'react'
+import { FaUserShield, FaHourglassHalf, FaUndoAlt, FaLightbulb, FaFlag } from 'react-icons/fa';
+import { GiStoneWall } from "react-icons/gi";
 import { useEffect, useState, useRef } from 'react';
 import { Game } from 'quoridor-game-engine'
 import Cell from './../components/Cell';
@@ -15,7 +17,7 @@ function Play() {
         p2: { name: 'testtwo' },
         boardSize: 9,
     }));
-    console.log(game);
+    // console.log(game);
     
     const [, forceUpdate] = useState(0);
 
@@ -54,32 +56,29 @@ function Play() {
         game.current.walls.reverse();
         return grid;
     };
-    console.log('render')
 
     return (
         <div className="min-h-screen bg-[#0e0e11] text-white py-6 flex flex-col items-center">
-            {/* Player HUD */}
-            <div className="w-full max-w-6xl flex justify-between items-center px-4">
-                <div className="flex items-center gap-4">
-                <img src={avatar} className="w-14 h-14 rounded-full border border-gray-500" alt="p1 avatar" />
-                <div>
-                    <div className="font-bold">{game.current.p1.name}</div>
-                    <div className="text-sm text-gray-400">Walls: {game.current.p1.nWalls} | Time: {game.current.t1 / 1000}s</div>
+            {/* Top Player Info 2 */}
+            <div className={`${game.current.isP1Turn ? 'off' : 'on'} flex justify-between items-center px-4 py-1 bg-btn-secondary text-badge-lock rounded-xl shadow-inner w-4/5 md:w-3/5 max-w-[600px] gap-5 md:gap-1`}>
+                <div className="flex items-center gap-0.5 text-badge-lock text-xl md:text-3xl md:min-w-24">
+                    <FaHourglassHalf />
+                    <span>{(game.current.t2 / 1000 / 60).toFixed(1)}m</span>
                 </div>
+                <div className="flex items-center gap-2 ">
+                    <div className={`flex flex-col justify-center items-center text-badge-lock relative`}>
+                        <img src={avatar} className="w-10 h-10 rounded-full border border-gray-600" alt="P1 Avatar" />
+                        <div className="px-3 py-1 bg-gradient-to-r from-btn-primary to-btn-secondary text-white text-xs rounded-full shadow-md animate-slideFade">
+                            {game.current.p2.name}
+                        </div>
+                    </div>
                 </div>
-
-                <div className="text-xl font-semibold text-gray-400">VS</div>
-
-                <div className="flex items-center gap-4">
-                <div className="text-right">
-                    <div className="font-bold">{game.current.p2.name}</div>
-                    <div className="text-sm text-gray-400">Walls: {game.current.p2.nWalls} | Time: {game.current.t2 / 1000}s</div>
-                </div>
-                <img src={avatar} className="w-14 h-14 rounded-full border border-gray-500" alt="p2 avatar" />
+                <div className="flex items-center gap-1 text-badge-lock text-3xl w-24">
+                    <span>{game.current.p2.nWalls}</span>
+                    <GiStoneWall />
                 </div>
             </div>
 
-            {renderHorizontalWallStack(game.current.p2.nWalls, '#facc15')}
             {/* Game Board */}
             <div
                 className="grid gap-0 bg-[#2b2b2b] px-1 py-3 md:px-6 md:py-6 rounded-lg board_background bg-cover mt-3 mb-6"
@@ -89,7 +88,6 @@ function Play() {
                 >
                 {renderGrid()}
             </div>
-            {renderHorizontalWallStack(game.current.p1.nWalls, '#16a34a')}
             <input
                 type="text"
                 placeholder="Enter your move"
@@ -101,15 +99,35 @@ function Play() {
                         game.current.move(`${e.target.value}`)
                         dispatch(updateValidMoves([]));
                         triggerRender();
-                        console.log(game);
+                        // console.log(game);
                         
                         e.target.value = ''; // Clear the input after submission
                     }
                 }}
             />
             
-            {/* Controls or Footer (optional) */}
-            <div className="mt-4 flex gap-4">
+            {/* bottom Player Info 1 */}
+            <div className={`${game.current.isP1Turn ? 'on' : 'off'} flex justify-between items-center px-4 py-1 bg-btn-secondary text-badge-lock rounded-xl shadow-inner w-4/5 md:w-3/5 max-w-[600px] gap-5 md:gap-1`}>
+                <div className="flex items-center gap-1 text-badge-lock text-3xl w-24">
+                    <span>{game.current.p1.nWalls}</span>
+                    <GiStoneWall />
+                </div>
+                <div className="flex items-center gap-2 ">
+                    <div className={`flex flex-col justify-center items-center text-badge-lock relative`}>
+                        <img src={avatar} className="w-10 h-10 rounded-full border border-gray-600" alt="P1 Avatar" />
+                        <div className="px-3 py-1 bg-gradient-to-r to-btn-primary from-btn-secondary text-white text-xs rounded-full shadow-md animate-slideFade">
+                            {game.current.p1.name}
+                        </div>
+                    </div>
+                </div>
+                <div className="flex items-center gap-0.5 text-badge-lock text-xl md:text-3xl md:min-w-24">
+                    <FaHourglassHalf />
+                    <span>{(game.current.t1 / 1000 / 60).toFixed(1)}m</span>
+                </div>
+            </div>
+
+            {/* Controls */}
+            <div className="mt-4 flex gap-4 justify-center">
                 <button className="bg-green-600 px-4 py-2 rounded shadow hover:bg-green-700">Surrender</button>
                 <button className="bg-yellow-600 px-4 py-2 rounded shadow hover:bg-yellow-700">Undo</button>
                 <button className="bg-blue-600 px-4 py-2 rounded shadow hover:bg-blue-700">Hint</button>

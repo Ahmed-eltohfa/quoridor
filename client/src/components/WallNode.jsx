@@ -22,6 +22,6 @@ export default function WallNode({ walls }) {
     
     
     return (
-        <div className={`md:w-4 md:h-4 h-1 w-1 wall ${num>0 ? 'wall-put':''} wall-${getWallSymbol(walls)}`}></div>
+        <div className={`xl:w-4 xl:h-4 md:w-2 md:h-2 h-1 w-1 wall ${num>0 ? 'wall-put':''} wall-${getWallSymbol(walls)}`}></div>
     );
 }

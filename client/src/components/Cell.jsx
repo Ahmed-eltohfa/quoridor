@@ -11,7 +11,7 @@ export default function Cell({ player, offset, size, game, position,triggerRende
     const getMoves = () => {
         // console.log(size - position.i,position.j+1);
         if (game.current.isP1Turn && player === '1' || !game.current.isP1Turn && player === '2') {
-            console.log('turno');
+            // console.log('turno');
             if (player == "1") {
                 validMoves = game.current.p1.getValidMoves(game.current).filter(move => move[0] === 'p');
             }else if (player == "2"){
@@ -25,9 +25,9 @@ export default function Cell({ player, offset, size, game, position,triggerRende
             dispatch(updateValidMoves(validMoves));
         } else {
             dispatch(updateValidMoves([]));
-            console.log("Not your turn");
+            // console.log("Not your turn");
         }
-        console.log(gamedata,cell);
+        // console.log(gamedata,cell);
     }
     const isValid = gamedata.validMoves.some(
         ([x, y]) => x === cell[0] && y === cell[1]
@@ -51,7 +51,7 @@ export default function Cell({ player, offset, size, game, position,triggerRende
     
     return (
         <div
-        className={`w-8 h-8 md:w-12 md:h-12 bg-cover border border-[#61411e] relative flex items-center justify-center cell_background ml-1 md:ml-4 ${offset === 0 ? 'ml-1 md:ml-4' : ''} cell-shadow`}
+        className={`w-8 h-8 md:w-10 md:h-10 xl:w-12 xl:h-12 bg-cover border border-[#61411e] relative flex items-center justify-center cell_background ml-1 md:ml-2 xl:ml-4 cell-shadow`}
         
         onClick={getMoves}
         >
