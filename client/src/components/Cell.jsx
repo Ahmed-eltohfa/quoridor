@@ -51,8 +51,9 @@ export default function Cell({ player, offset, size, game, position,triggerRende
     
     return (
         <div
-        className={`w-8 h-8 md:w-10 md:h-10 xl:w-12 xl:h-12 bg-cover border border-[#61411e] relative flex items-center justify-center cell_background ml-1 md:ml-2 xl:ml-4 cell-shadow`}
-        
+        className={`w-8 h-8 md:w-10 md:h-10 xl:w-12 xl:h-12 bg-cover border border-[#61411e] relative flex items-center justify-center cell_background ml-1 md:ml-2 xl:ml-4 cell-shadow ${cell[0] === 1 ? 'cellh' : ''} ${cell[1] === 1 ? 'cellv' : ''}`}
+        data-number = {cell[1]}
+        data-letter = {cell[0]} // Convert to letter (1 -> a, 2 -> b, etc.)
         onClick={getMoves}
         >
             {player === '1' && <div className="pawn pawn-green cursor-pointer" />}

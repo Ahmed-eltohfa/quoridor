@@ -43,7 +43,7 @@ function Play() {
         for (let i = 0; i < size+1; i++) {
             game.current.walls[i].forEach((wall, j) => {
                 const key = `w-${i}-${j}`;
-                grid.push(<WallNode key={key} walls={wall} />);
+                grid.push(<WallNode key={key} walls={wall} position={{i,j}} size={size} game={game} />);
             });
             if (i === size) break; // Skip the last row for walls
             for (let j = 0; j < size; j++) {
@@ -60,7 +60,7 @@ function Play() {
     return (
         <div className="min-h-screen bg-[#0e0e11] text-white py-6 flex flex-col items-center">
             {/* Top Player Info 2 */}
-            <div className={`${game.current.isP1Turn ? 'off' : 'on'} flex justify-between items-center px-4 py-1 bg-btn-secondary text-badge-lock rounded-xl shadow-inner w-4/5 md:w-3/5 max-w-[600px] gap-5 md:gap-1`}>
+            <div className={`${game.current.isP1Turn ? 'off' : 'on'} flex justify-between items-center px-4 py-1 bg-btn-secondary text-badge-lock rounded-xl shadow-inner w-4/5 md:w-3/5 max-w-[400px] gap-5 md:gap-1`}>
                 <div className="flex items-center gap-0.5 text-badge-lock text-xl md:text-3xl md:min-w-24">
                     <FaHourglassHalf />
                     <span>{(game.current.t2 / 1000 / 60).toFixed(1)}m</span>
@@ -73,7 +73,7 @@ function Play() {
                         </div>
                     </div>
                 </div>
-                <div className="flex items-center gap-1 text-badge-lock text-3xl w-24">
+                <div className="flex items-center gap-1 text-badge-lock text-3xl w-24 justify-center">
                     <span>{game.current.p2.nWalls}</span>
                     <GiStoneWall />
                 </div>
@@ -107,8 +107,8 @@ function Play() {
             />
             
             {/* bottom Player Info 1 */}
-            <div className={`${game.current.isP1Turn ? 'on' : 'off'} flex justify-between items-center px-4 py-1 bg-btn-secondary text-badge-lock rounded-xl shadow-inner w-4/5 md:w-3/5 max-w-[600px] gap-5 md:gap-1`}>
-                <div className="flex items-center gap-1 text-badge-lock text-3xl w-24">
+            <div className={`${game.current.isP1Turn ? 'on' : 'off'} flex justify-between items-center px-4 py-1 bg-btn-secondary text-badge-lock rounded-xl shadow-inner w-4/5 md:w-3/5 max-w-[400px] gap-5 md:gap-1`}>
+                <div className="flex items-center gap-1 text-badge-lock text-3xl w-24 justify-center">
                     <span>{game.current.p1.nWalls}</span>
                     <GiStoneWall />
                 </div>

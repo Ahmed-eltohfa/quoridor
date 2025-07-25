@@ -322,9 +322,9 @@ class Player {
                         const row = op[0] + dRow;
                         const col = op[1] + dCol;
 
-                        if (row >= 0 && col >= 0 && row < game.boardSize - 1 && col < game.boardSize - 1) {
-                            const rowChar = String.fromCharCode(97 + row + 1);
-                            const nextRowChar = String.fromCharCode(97 + row + 3);
+                        if (row >= 0 && col >= 0 && row <= game.boardSize && col <= game.boardSize) {
+                            const rowChar = String.fromCharCode(97 + row);
+                            const nextRowChar = String.fromCharCode(97 + row + 2);
                             const colChar = String.fromCharCode(97 + col);
                             const nextColChar = String.fromCharCode(97 + col + 2);
 

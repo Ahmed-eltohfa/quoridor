@@ -112,42 +112,21 @@ const g1 = new Game({
     boardSize: 9,
 });
 g1.printAllBoard();
-// g1.move("w1_c-ce");
-// g1.printAllBoard();
-// g1.move("w2_df-e");
-// g1.printAllBoard();
-// g1.move("p1_2-5");
-// g1.move("p2_8-5");
-// g1.printAllBoard();
-// console.log(g1.p1, g1.p2);
-// g1.undo();
-// g1.move("p2_8-5");
-// console.log(g1.p1, g1.p2);
-// g1.printAllBoard();
-// console.log(g1.shortestPath(1));
-// g1.move("p1_2-3");
-// g1.move("p2_3-3");
-// console.log(g1.checkMove("p2_1-3", g1.p2.position, [], false));
-// g1.printAllBoard();
-// g1.move(g1.move("p2_4-3"));
-// g1.move(g1.p1.getEasyMove(g1));
-// console.log(g1.p1);
-// console.log('path', g1.shortestPath(1));
-// g1.checkMove("p1_4-4", [3, 1], [3, 3]);
-// console.log(g1.p1);
+console.log(JSON.stringify(g1.p1.getValidMoves(g1, 18)));
 
-while (g1.isGameOver === false) {
-    g1.move(g1.p1.smartMove(g1));
-    g1.printAllBoard();
-    g1.move(g1.p2.smartMove(g1));
-    g1.printAllBoard();
-}
-console.log("Game Over", g1.winner, g1.moves.length);
-g1.undo();
-g1.undo();
-g1.restartGame();
-g1.undo();
-g1.printAllBoard();
+
+// while (g1.isGameOver === false) {
+//     g1.move(g1.p1.smartMove(g1));
+//     g1.printAllBoard();
+//     g1.move(g1.p2.smartMove(g1));
+//     g1.printAllBoard();
+// }
+// console.log("Game Over", g1.winner, g1.moves.length);
+// g1.undo();
+// g1.undo();
+// g1.restartGame();
+// g1.undo();
+// g1.printAllBoard();
 
 
 // console.log(g1.p1.theBestMove(g1));
