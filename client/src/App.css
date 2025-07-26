@@ -232,6 +232,12 @@ body {
   background-color: rgb(0, 255, 0);
 }
 
+.wall-hoverd {
+  background-color: rgb(0, 155, 0);
+  background-blend-mode: multiply;
+  z-index: 2;
+}
+
 
 .wall-htext::before {
   content: attr(data-uletter);
@@ -264,6 +270,7 @@ body {
   background: url('./assets/w4.png');
   background-repeat: repeat-x;
   background-position: center;
+  z-index: -2;
 }
 
 .wall-h::before {

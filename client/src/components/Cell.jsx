@@ -3,7 +3,7 @@ import { updateValidMoves } from "../rtk/slices/gameSlice";
 
 export default function Cell({ player, offset, size, game, position,triggerRender }) {
     
-    const gamedata = useSelector((state) => state.game);
+    const gamedata = useSelector((state) => state.game.validMoves);
     const dispatch = useDispatch();
 
     let validMoves = [];
@@ -28,8 +28,9 @@ export default function Cell({ player, offset, size, game, position,triggerRende
             // console.log("Not your turn");
         }
         // console.log(gamedata,cell);
+        triggerRender()
     }
-    const isValid = gamedata.validMoves.some(
+    const isValid = gamedata.some(
         ([x, y]) => x === cell[0] && y === cell[1]
     );
     const makeMove = () =>{

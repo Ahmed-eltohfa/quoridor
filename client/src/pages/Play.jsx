@@ -43,7 +43,7 @@ function Play() {
         for (let i = 0; i < size+1; i++) {
             game.current.walls[i].forEach((wall, j) => {
                 const key = `w-${i}-${j}`;
-                grid.push(<WallNode key={key} walls={wall} position={{i,j}} size={size} game={game} />);
+                grid.push(<WallNode key={key} walls={wall} position={{i,j}} size={size} game={game} triggerRender={triggerRender} />);
             });
             if (i === size) break; // Skip the last row for walls
             for (let j = 0; j < size; j++) {
