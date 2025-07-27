@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
     validMoves: [],
     validWalls: [],
+    removeClass: false,
 }
 
 export const gameSlice = createSlice({
@@ -14,9 +15,12 @@ export const gameSlice = createSlice({
         },
         updateValidWalls: (state, action) => {
             state.validWalls = action.payload; // Update the valid walls with the payload
+        },
+        trigger: (state) => {
+            state.removeClass = !state.removeClass; // Toggle the removeClass state
         }
     },
 })
 
-export const { updateValidMoves, updateValidWalls } = gameSlice.actions
+export const { updateValidMoves, updateValidWalls, trigger } = gameSlice.actions
 export default gameSlice.reducer

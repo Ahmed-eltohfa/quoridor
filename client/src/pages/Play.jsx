@@ -61,9 +61,11 @@ function Play() {
         <div className="min-h-screen bg-[#0e0e11] text-white py-6 flex flex-col items-center">
             {/* Top Player Info 2 */}
             <div className={`${game.current.isP1Turn ? 'off' : 'on'} flex justify-between items-center px-4 py-1 bg-btn-secondary text-badge-lock rounded-xl shadow-inner w-4/5 md:w-3/5 max-w-[400px] gap-5 md:gap-1`}>
-                <div className="flex items-center gap-0.5 text-badge-lock text-xl md:text-3xl md:min-w-24">
+                <div className="flex items-center gap-0.5 text-badge-lock text-xl md:text-3xl min-w-18 md:min-w-24">
                     <FaHourglassHalf />
-                    <span>{(game.current.t2 / 1000 / 60).toFixed(1)}m</span>
+                    <span>
+                    {Math.floor(game.current.t2 / 1000 / 60)}:{(game.current.t2 / 1000 % 60).toFixed(0).toString().padStart(2, '0')}
+                    </span>
                 </div>
                 <div className="flex items-center gap-2 ">
                     <div className={`flex flex-col justify-center items-center text-badge-lock relative`}>
@@ -88,7 +90,7 @@ function Play() {
                 >
                 {renderGrid()}
             </div>
-            <input
+            {/* <input
                 type="text"
                 placeholder="Enter your move"
                 className="mt-4 p-2 rounded"
@@ -104,7 +106,7 @@ function Play() {
                         e.target.value = ''; // Clear the input after submission
                     }
                 }}
-            />
+            /> */}
             
             {/* bottom Player Info 1 */}
             <div className={`${game.current.isP1Turn ? 'on' : 'off'} flex justify-between items-center px-4 py-1 bg-btn-secondary text-badge-lock rounded-xl shadow-inner w-4/5 md:w-3/5 max-w-[400px] gap-5 md:gap-1`}>
@@ -120,9 +122,11 @@ function Play() {
                         </div>
                     </div>
                 </div>
-                <div className="flex items-center gap-0.5 text-badge-lock text-xl md:text-3xl md:min-w-24">
+                <div className="flex items-center gap-0.5 text-badge-lock text-xl md:text-3xl min-w-18 md:min-w-24">
                     <FaHourglassHalf />
-                    <span>{(game.current.t1 / 1000 / 60).toFixed(1)}m</span>
+                    <span>
+                    {Math.floor(game.current.t1 / 1000 / 60)}:{(game.current.t1 / 1000 % 60).toFixed(0).toString().padStart(2, '0')}
+                    </span>
                 </div>
             </div>
 

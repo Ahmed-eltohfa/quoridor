@@ -1,15 +1,19 @@
 import { useDispatch, useSelector } from "react-redux";
-import { updateValidWalls } from "../rtk/slices/gameSlice";
+import { trigger, updateValidMoves, updateValidWalls } from "../rtk/slices/gameSlice";
 import { useEffect } from "react";
-import { GiAppleMaggot } from "react-icons/gi";
 
 export default function WallNode({ walls, position, size, game, triggerRender }) {
 
     const validWalls = useSelector((state) => state.game);
+    const triggerd = useSelector((state) => state.game.removeClass);
     const dispatch = useDispatch();
 
+    useEffect(()=>{        
+        document.querySelector('.wall-clicked')?.classList.remove('wall-clicked');
+    },[triggerd]);
     // console.log('validWalls',validWalls);
     const num = Object.values(walls).filter(Boolean).length;
+
     function getWallSymbol(wall) {
         const { up, down, left, right } = wall;
         if (up && down && left && right) return 'c'; // center ┼
@@ -29,6 +33,7 @@ export default function WallNode({ walls, position, size, game, triggerRender })
         else if (right) return 'l0';                 // ╶
         else return '.';                             // Empty
     }
+
     const {i, j} = position;
     let classname = '';
     if (i === 0 && j === 9) {
@@ -39,7 +44,10 @@ export default function WallNode({ walls, position, size, game, triggerRender })
         classname = 'wall-top';
     }
     
-    const handelClick = (e) => {
+    const handelClick = async (e) => {
+        dispatch(updateValidMoves([]));
+        await dispatch(trigger());
+        // console.log(e.target.parentNode)
         if (e.target.classList.contains('wall-clicked')) {
             e.target.classList.remove('wall-clicked');
             dispatch(updateValidWalls([]));
@@ -55,9 +63,10 @@ export default function WallNode({ walls, position, size, game, triggerRender })
                     }
                 }
             )
+            document.querySelector('.wall-clicked')?.classList.remove('wall-clicked');
             return;
         }
-        document.querySelector('.wall-clicked')?.classList.remove('wall-clicked');
+        // document.querySelector('.wall-clicked')?.classList.remove('wall-clicked');
         e.target.classList.add('wall-clicked');
         console.log(game);
         console.log(i , j);
@@ -100,7 +109,6 @@ export default function WallNode({ walls, position, size, game, triggerRender })
         }).filter(Boolean);
         console.log('aroundAvilableWalls', aroundAvilableWalls);
         aroundAvilableWalls.wallClicked = {i,j};
-        
         dispatch(updateValidWalls(aroundAvilableWalls));
         triggerRender();
     }
@@ -109,7 +117,7 @@ export default function WallNode({ walls, position, size, game, triggerRender })
     );
     return (
         <div 
-            className={`xl:w-4 xl:h-4 md:w-2 ${i}-${j} ${isInAroundValidWalls ? 'wall-hoverd' : ''} md:h-2 h-1 w-1 wall ${num>0 ? 'wall-put':''} relative wall-${getWallSymbol(walls)}`}
+            className={`xl:w-4 xl:h-4 md:w-2 ${i}-${j} md:h-2 h-1 w-1 wall ${num>0 ? 'wall-put':''} relative wall-${getWallSymbol(walls)}`}
             onClick={(e)=>{ handelClick(e) }}
         >
             <span
@@ -117,6 +125,8 @@ export default function WallNode({ walls, position, size, game, triggerRender })
             data-uletter = {String.fromCharCode(97 + j)} // Convert to letter (1 -> a, 2 -> b, etc.)
             data-rletter = {String.fromCharCode(97 + size - i)} // Convert to letter in reverse rational to size
             >
+            </span>
+            <span className={`absolute w-full h-full ${isInAroundValidWalls ? 'wall-hoverd' : ''}`} >
             </span>
         </div>
     );

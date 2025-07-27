@@ -221,7 +221,7 @@ body {
 /* wall */
 .wall {
   position: relative;
-  background: red;
+  background: #b89b72;
   border-radius: 15%;
   transition: transform 0.1s ease;
   cursor: pointer;
@@ -406,9 +406,30 @@ body {
 }
 
 .wall-r0::before {
-  width: 200%;
+  width: 220%;
   height: 100%;
   transform: translateX(-50%);
+}
+
+@media (width >=80rem
+  /* 1280px */
+) {
+
+  .wall-h::before,
+  .wall-b::before,
+  .wall-t::before {
+    width: 590%;
+    transform: translateX(-40%);
+  }
+
+  .wall-v::before,
+  .wall-l::before,
+  .wall-c::before,
+  .wall-r::before {
+    height: 590%;
+    transform: translateY(-40%);
+  }
+
 }
 
 @media (max-width: 768px) {
@@ -416,16 +437,16 @@ body {
   .wall-h::before,
   .wall-b::before,
   .wall-t::before {
-    width: 1690%;
-    transform: translateX(-50%);
+    width: 1600%;
+    transform: translateX(-47%);
   }
 
   .wall-v::before,
   .wall-l::before,
   .wall-c::before,
   .wall-r::before {
-    height: 1690%;
-    transform: translateY(-50%);
+    height: 1500%;
+    transform: translateY(-47%);
   }
 
   .wall-vtext::after {
