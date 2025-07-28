@@ -107,6 +107,7 @@ export default function WallNode({ walls, position, size, game, triggerRender })
                 }
             }
         }).filter(Boolean);
+
         console.log('aroundAvilableWalls', aroundAvilableWalls);
         aroundAvilableWalls.wallClicked = {i,j};
         dispatch(updateValidWalls(aroundAvilableWalls));
@@ -121,7 +122,7 @@ export default function WallNode({ walls, position, size, game, triggerRender })
             onClick={(e)=>{ handelClick(e) }}
         >
             <span
-            className={` relative ${i === 0 ? 'wall-htext' : ''} ${j === 9 ? 'wall-vtext' : ''} text-xs md:text-sm xl:text-base text-white`}
+            className={` relative ${i === 0 ? 'wall-htext' : ''} ${j === size ? 'wall-vtext' : ''} text-xs md:text-sm xl:text-base text-white`}
             data-uletter = {String.fromCharCode(97 + j)} // Convert to letter (1 -> a, 2 -> b, etc.)
             data-rletter = {String.fromCharCode(97 + size - i)} // Convert to letter in reverse rational to size
             >

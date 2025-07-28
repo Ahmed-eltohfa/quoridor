@@ -6,17 +6,14 @@ import { Game } from 'quoridor-game-engine'
 import Cell from './../components/Cell';
 import WallNode from '../components/WallNode';
 import avatar from '../assets/avatar1.png'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { updateValidMoves } from '../rtk/slices/gameSlice';
 
 function Play() {
     const dispatch = useDispatch();
+    const gameInfo = useSelector((state => state.game.gameInfo));
 
-    const game = useRef(new Game({
-        p1: { name: 'testone' },
-        p2: { name: 'testtwo' },
-        boardSize: 9,
-    }));
+    const game = useRef(new Game(gameInfo));
     // console.log(game);
     
     const [, forceUpdate] = useState(0);
