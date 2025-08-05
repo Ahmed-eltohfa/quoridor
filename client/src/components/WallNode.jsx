@@ -46,15 +46,16 @@ export default function WallNode({ walls, position, size, game, triggerRender })
     }
     
     const handelClick = async (e) => {
+        // console.log(e.target)
         dispatch(updateValidMoves([]));
         await dispatch(trigger());
         // console.log(e.target.parentNode)
-        if (e.target.classList.contains('wall-clicked')) {
-            e.target.classList.remove('wall-clicked');
+        if (e.target.parentNode.classList.contains('wall-clicked')) {
+            e.target.parentNode.classList.remove('wall-clicked');
             dispatch(updateValidWalls([]));
             triggerRender();
             return;
-        }else if (e.target.classList.contains('wall-hoverd')) {
+        }else if (e.target.classList.contains('wall-hoverd') || e.target.previousSibling.classList.contains('wall-hoverd') ) {
                 validWalls.validWalls.forEach((wall) => {
                     if (wall.position[0] === i && wall.position[1] === j) {
                         game.current.move(String(wall.move));
@@ -63,7 +64,7 @@ export default function WallNode({ walls, position, size, game, triggerRender })
                         triggerRender();
                         
                         if (gameMode === 'ai' && !game.current.isP1Turn) {
-                            console.log('AI Move');
+                            // console.log('AI Move');
                             console.log(game.current.move(String(game.current.p2.smartMove(game.current))));
                             dispatch(updateValidWalls([]));
                             triggerRender();
@@ -77,9 +78,9 @@ export default function WallNode({ walls, position, size, game, triggerRender })
             return;
         }
         // document.querySelector('.wall-clicked')?.classList.remove('wall-clicked');
-        e.target.classList.add('wall-clicked');
-        console.log(game);
-        console.log(i , j);
+        e.target.parentNode.classList.add('wall-clicked');
+        // console.log(game);
+        // console.log(i , j);
         let elementWithDAndF = [];
         if (game.current.isP1Turn) {
             elementWithDAndF = game.current.p1.getValidMoves(game.current,size*3).filter(element => {
@@ -118,7 +119,7 @@ export default function WallNode({ walls, position, size, game, triggerRender })
             }
         }).filter(Boolean);
 
-        console.log('aroundAvilableWalls', aroundAvilableWalls);
+        // console.log('aroundAvilableWalls', aroundAvilableWalls);
         aroundAvilableWalls.wallClicked = {i,j};
         dispatch(updateValidWalls(aroundAvilableWalls));
         triggerRender();
@@ -139,8 +140,7 @@ export default function WallNode({ walls, position, size, game, triggerRender })
             </span>
             <span className={`absolute w-full h-full ${isInAroundValidWalls ? 'wall-hoverd' : ''}`} >
             </span>
-            <span className="absolute">
-
+            <span className="absolute w-full h-full top-0 left-0 p-2 xl:p-4 cursor-pointer -translate-1/3">
             </span>
         </div>
     );

@@ -30,7 +30,7 @@ export default function Game() {
     const difficulty = aiLevel === 'easy' ? 6 : aiLevel === 'medium' ? 10 : aiLevel === 'hard' ? 50 : aiLevel === 'expert' ? 2000 : 5;
     dispatch(updateGameInfo({
       p1:{ name: localConfig.player1 || 'Player 1', nWalls: localConfig.walls || 10, avatar: 1 },
-      p2:{ name: localConfig.player2 || 'AI', nWalls: localConfig.walls || 10, avatar: 1, difficulty: difficulty },
+      p2:{ name: localConfig.player2 || 'Player 2', nWalls: localConfig.walls || 10, avatar: 1, difficulty: difficulty },
       boardSize: localConfig.boardSize,
       mode: settingsState || 'quick',
     }))

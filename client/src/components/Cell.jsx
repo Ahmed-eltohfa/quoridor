@@ -14,6 +14,8 @@ export default function Cell({ player, offset, size, game, position,triggerRende
         dispatch(trigger());
         // console.log(size - position.i,position.j+1);
         if (game.current.isP1Turn && player === '1' || !game.current.isP1Turn && player === '2') {
+            // console.log(game.current.isP1Turn,player,game.current);
+            
             // console.log('turno');
             if (player == "1") {
                 validMoves = game.current.p1.getValidMoves(game.current).filter(move => move[0] === 'p');
@@ -51,7 +53,7 @@ export default function Cell({ player, offset, size, game, position,triggerRende
         dispatch(updateValidMoves([]));
         triggerRender();
         if (gameMode === 'ai' && !game.current.isP1Turn) {
-            console.log('AI Move');
+            // console.log('AI Move');
             console.log(game.current.move(String(game.current.p2.smartMove(game.current))));
         }        
         dispatch(updateValidMoves([]));

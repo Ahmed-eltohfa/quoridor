@@ -1,4 +1,4 @@
-import { useState,useEffect, useRef } from 'react';
+import React, { useState,useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo2.png';
 import profilePic from '../assets/avatars.png';
@@ -98,24 +98,23 @@ const Navbar = () => {
         { (
             <div className={`fixed bg-gray-900 space-y-10 border-gray-700 shadow-lg flex flex-col items-center py-2 h-full justify-start left-0 top-0 ${menuOpen ? 'w-5/6 py-10 px-3' : 'w-0'} transition-all bg-gray-300 overflow-hidden z-[1000] gap-0`} ref={menuRef} > 
             {navItems.map((item,index) => (
-                <>
-                <Link
-                key={item.path}
-                to={item.path}
-                onClick={() => setMenuOpen(false)}
-                className={`flex items-center space-x-2 text-sm w-full py-10 px-2 m-0 ${
-                    location.pathname === item.path
-                    ? 'text-blue-500'
-                    : 'text-gray-300 hover:text-blue-400'
-                }`}
-                >
-                {item.icon}
-                <span>{item.name}</span>
-                </Link>
-                {index !== navItems.length - 1 && (
-                    <hr className="border-t border-gray-400 w-full m-0" />
-                )}
-                </>
+                <React.Fragment key={item.path}>
+                    <Link
+                    to={item.path}
+                    onClick={() => setMenuOpen(false)}
+                    className={`flex items-center space-x-2 text-sm w-full py-10 px-2 m-0 ${
+                        location.pathname === item.path
+                        ? 'text-blue-500'
+                        : 'text-gray-300 hover:text-blue-400'
+                    }`}
+                    >
+                    {item.icon}
+                    <span>{item.name}</span>
+                    </Link>
+                    {index !== navItems.length - 1 && (
+                        <hr className="border-t border-gray-400 w-full m-0" />
+                    )}
+                </React.Fragment>
             ))}
             </div>
         )}

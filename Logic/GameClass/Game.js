@@ -548,6 +548,7 @@ class Game {
             this.startTime = previousState.startTime;
             this.lastMoveTime = previousState.lastMoveTime;
             this.isGameOver = previousState.isGameOver ?? false;
+            this.moves = previousState.moves;
 
             console.log("Undo successful.");
         } else {

@@ -10,6 +10,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateValidMoves } from '../rtk/slices/gameSlice';
 
 function Play() {
+
+    window.addEventListener("beforeunload", function (e) {
+        e.preventDefault();
+        e.returnValue = ""; // required for Chrome
+    });
+
     const dispatch = useDispatch();
     const gameInfo = useSelector((state => state.game.gameInfo));
     useEffect(()=>{
@@ -58,8 +64,56 @@ function Play() {
         return grid;
     };
 
+    const undo = () => {
+        console.log('undo');
+        return;
+        console.log(game.current);
+        game.current.undo();
+        triggerRender();
+        console.log(game.current);
+    }
+
+    const onPlayAgain = ()=>{
+        console.log('restart');
+        // game.current.restartGame();
+        game.current.init(gameInfo);
+        triggerRender();
+        console.log(game)
+    }
+
+    const onExit = ()=>{
+        console.log('exit');
+    }
+
     return (
         <div className="min-h-screen bg-[#0e0e11] text-white py-6 flex flex-col items-center">
+            {game.current.isGameOver && (
+                <div className="fixed inset-0 bg-[#00000087] bg-opacity-70 flex flex-col items-center justify-center z-[1000]">
+                    <div className="winner-card rounded-2xl shadow-2xl p-8 text-center border-4 border-amber-900">
+                        <h1 className="text-5xl font-extrabold text-white drop-shadow-lg mb-4">
+                            GAME OVER
+                        </h1>
+                        <p className="text-2xl text-text-secondary font-semibold mb-6">
+                            Winner: <span className="">{game.current.winner === 1 ? game.current.p1.name : game.current.p2.name }</span>
+                        </p>
+                        <div className="flex gap-4 justify-center">
+                            <button
+                                onClick={onPlayAgain}
+                                className="px-6 py-3 bg-btn-primary hover:bg-btn-hover rounded-lg font-bold text-white shadow-md"
+                            >
+                                Restart
+                            </button>
+                            <button
+                                onClick={onExit}
+                                className="px-6 py-3 bg-btn-secondary hover:bg-secondary-hover rounded-lg font-bold text-white shadow-md"
+                            >
+                                Exit
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            
             {/* Top Player Info 2 */}
             <div className={`${game.current.isP1Turn ? 'off' : 'on'} flex justify-between items-center px-4 py-1 bg-btn-secondary text-badge-lock rounded-xl shadow-inner w-4/5 md:w-3/5 max-w-[400px] gap-5 md:gap-1`}>
                 <div className="flex items-center gap-0.5 text-badge-lock text-xl md:text-3xl min-w-18 md:min-w-24">
@@ -82,32 +136,33 @@ function Play() {
                 </div>
             </div>
 
-            {/* Game Board */}
-            <div
-                className="grid gap-0 bg-[#2b2b2b] px-1 py-3 md:px-6 md:py-6 rounded-lg board_background bg-cover mt-3 mb-6"
-                style={{
-                    gridTemplateColumns: `repeat(${size + 1}, auto)`
-                }}
-                >
-                {renderGrid()}
+            {/* main */}
+            <div className="cont flex justify-between w-full max-h-[550px] gap-2 xl:max-h-[700px]">
+                {/* Controls */}
+                <div className="mt-4 hidden lg:flex gap-4 justify-center flex-col">
+                    <button className="bg-green-600 px-4 py-2 rounded shadow hover:bg-green-700 flex items-center gap-2"><FaFlag />Surrender</button>
+                    <button className="bg-yellow-600 px-4 py-2 rounded shadow hover:bg-yellow-700 flex items-center gap-2 disabled:" onClick={undo}><FaUndoAlt />Undo</button>
+                    <button className="bg-blue-600 px-4 py-2 rounded shadow hover:bg-blue-700 flex items-center gap-2"><FaLightbulb />Hint</button>
+                </div>
+                {/* Game Board */}
+                <div
+                    className="grid gap-0 bg-[#2b2b2b] px-1 py-3 md:px-6 md:py-6 rounded-lg board_background bg-cover mt-3 mb-6"
+                    style={{
+                        gridTemplateColumns: `repeat(${size + 1}, auto)`
+                    }}
+                    >
+                    {renderGrid()}
+                </div>
+                {/* moves */}
+                <div className="moves hidden mt-4 lg:flex flex-wrap w-38 h-fit border border-btn-secondary p-2 min-h-20">
+                    <div className='w-full border-b-gray-300 text-text-muted text-center border mb-1'>
+                        Moves
+                    </div>
+                    {game.current.moves.map((element,i)=>(
+                        <span className={`${i%2 === 0 ? 'text-green-500' : 'text-blue-500'} w-[calc(50% - 4px)] mr-1`} key={i}>{element},</span>
+                    ))} 
+                </div>
             </div>
-            {/* <input
-                type="text"
-                placeholder="Enter your move"
-                className="mt-4 p-2 rounded"
-                onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                        // Handle the move submission logic here
-                        console.log(`Move entered: ${e.target.value}`);
-                        game.current.move(`${e.target.value}`)
-                        dispatch(updateValidMoves([]));
-                        triggerRender();
-                        // console.log(game);
-                        
-                        e.target.value = ''; // Clear the input after submission
-                    }
-                }}
-            /> */}
             
             {/* bottom Player Info 1 */}
             <div className={`${game.current.isP1Turn ? 'on' : 'off'} flex justify-between items-center px-4 py-1 bg-btn-secondary text-badge-lock rounded-xl shadow-inner w-4/5 md:w-3/5 max-w-[400px] gap-5 md:gap-1`}>
@@ -130,13 +185,13 @@ function Play() {
                     </span>
                 </div>
             </div>
+                {/* Controls */}
+                <div className="mt-4 flex lg:hidden gap-4 justify-center">
+                    <button className="bg-green-600 px-4 py-2 rounded shadow hover:bg-green-700 flex items-center gap-2"><FaFlag />Surrender</button>
+                    <button className="bg-yellow-600 px-4 py-2 rounded shadow hover:bg-yellow-700 flex items-center gap-2"><FaUndoAlt />Undo</button>
+                    <button className="bg-blue-600 px-4 py-2 rounded shadow hover:bg-blue-700 flex items-center gap-2"><FaLightbulb />Hint</button>
+                </div>
 
-            {/* Controls */}
-            <div className="mt-4 flex gap-4 justify-center">
-                <button className="bg-green-600 px-4 py-2 rounded shadow hover:bg-green-700">Surrender</button>
-                <button className="bg-yellow-600 px-4 py-2 rounded shadow hover:bg-yellow-700">Undo</button>
-                <button className="bg-blue-600 px-4 py-2 rounded shadow hover:bg-blue-700">Hint</button>
-            </div>
         </div>
     );
 }
