@@ -6,7 +6,7 @@ const initialState = {
     removeClass: false,
     gameInfo: {
         p1: { name: 'Player 1', nWalls: 10, avatar: 1 }, // Example player 1 info
-        p2: { name: 'Player 2', nWalls: 10, avatar: 1 }, // Example player 2 info
+        p2: { name: 'Player 2', nWalls: 10, avatar: 1, difficulty: 4 }, // Example player 2 info
         boardSize: 9,
     },
 }

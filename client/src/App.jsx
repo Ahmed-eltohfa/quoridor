@@ -16,6 +16,7 @@ import LeaderBoard from './pages/LeaderBoard';
 import Game from './pages/Game';
 import Footer from './components/Footer.jsx';
 import Play from './pages/Play.jsx';
+import ScrollToTop from './components/ScrollToTop.jsx';
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
     <>
     <Nav />
     <div className='contain mx-2 md:mx-4 lg:mx-8 xl:mx-10 mt-16 pt-1'>
+      <ScrollToTop />
       <Routes>
           <Route exact path="/" element={<Home />} />
           <Route path="/about" element={<About />} />

@@ -4,6 +4,7 @@ import { trigger, updateValidMoves, updateValidWalls } from "../rtk/slices/gameS
 export default function Cell({ player, offset, size, game, position,triggerRender }) {
     
     const gamedata = useSelector((state) => state.game.validMoves);
+    const gameMode = useSelector((state) => state.settings.gameMode);
     const dispatch = useDispatch();
 
     let validMoves = [];
@@ -35,7 +36,7 @@ export default function Cell({ player, offset, size, game, position,triggerRende
     const isValid = gamedata.some(
         ([x, y]) => x === cell[0] && y === cell[1]
     );
-    const makeMove = () =>{
+    const makeMove = async () =>{
         let turn=0;
         if (game.current.isP1Turn) {
             turn = 1;
@@ -46,8 +47,13 @@ export default function Cell({ player, offset, size, game, position,triggerRende
         console.log('movestr',moveStr);
         
         // game.current.move(moveStr);
-        console.log(game.current.move(String(moveStr)));
-        
+        await console.log(game.current.move(String(moveStr)));
+        dispatch(updateValidMoves([]));
+        triggerRender();
+        if (gameMode === 'ai' && !game.current.isP1Turn) {
+            console.log('AI Move');
+            console.log(game.current.move(String(game.current.p2.smartMove(game.current))));
+        }        
         dispatch(updateValidMoves([]));
         triggerRender();
     }

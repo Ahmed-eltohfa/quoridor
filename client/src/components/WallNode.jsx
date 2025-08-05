@@ -6,6 +6,7 @@ export default function WallNode({ walls, position, size, game, triggerRender })
 
     const validWalls = useSelector((state) => state.game);
     const triggerd = useSelector((state) => state.game.removeClass);
+    const gameMode = useSelector((state) => state.settings.gameMode);
     const dispatch = useDispatch();
 
     useEffect(()=>{        
@@ -57,8 +58,17 @@ export default function WallNode({ walls, position, size, game, triggerRender })
                 validWalls.validWalls.forEach((wall) => {
                     if (wall.position[0] === i && wall.position[1] === j) {
                         game.current.move(String(wall.move));
+                        // console.log(gameMode);
                         dispatch(updateValidWalls([]));
                         triggerRender();
+                        
+                        if (gameMode === 'ai' && !game.current.isP1Turn) {
+                            console.log('AI Move');
+                            console.log(game.current.move(String(game.current.p2.smartMove(game.current))));
+                            dispatch(updateValidWalls([]));
+                            triggerRender();
+                        }
+
                         return;
                     }
                 }
@@ -128,6 +138,9 @@ export default function WallNode({ walls, position, size, game, triggerRender })
             >
             </span>
             <span className={`absolute w-full h-full ${isInAroundValidWalls ? 'wall-hoverd' : ''}`} >
+            </span>
+            <span className="absolute">
+
             </span>
         </div>
     );

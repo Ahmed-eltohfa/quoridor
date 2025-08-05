@@ -12,6 +12,10 @@ import { updateValidMoves } from '../rtk/slices/gameSlice';
 function Play() {
     const dispatch = useDispatch();
     const gameInfo = useSelector((state => state.game.gameInfo));
+    useEffect(()=>{
+        console.log(gameInfo);
+    },[gameInfo]);
+    
 
     const game = useRef(new Game(gameInfo));
     // console.log(game);

@@ -4,25 +4,37 @@ import { FaBolt, FaUsers, FaRobot } from 'react-icons/fa';
 import boardImg from '../assets/board.png'
 import { updateMode } from '../rtk/slices/settingsSlice';
 import { useNavigate } from 'react-router-dom';
+import { updateGameInfo } from '../rtk/slices/gameSlice';
 
 export default function Game() {
-
   const [localConfig, setLocalConfig] = useState({
     player1: '',
     player2: '',
     boardSize: 9,
     walls: 10,
   });
+  useEffect(()=>{
+
+  },[localConfig])
   const navigate = useNavigate();
   const [aiLevel, setAiLevel] = useState('medium');
 
-  const handleStartQuickMatch = () => navigate('/play') ;
+  const handleStartQuickMatch = () => navigate('/waiting') ;
   const handleStartLocalGame = () => navigate('/play');
   const handleStartAiGame = () => navigate('/play');
 
   const settingsState = useSelector(state=>state.settings.gameMode);
   const dispatch = useDispatch();
-
+  const gameInfo = useSelector((state => state.game.gameInfo));
+  useEffect(() => {
+    const difficulty = aiLevel === 'easy' ? 6 : aiLevel === 'medium' ? 10 : aiLevel === 'hard' ? 50 : aiLevel === 'expert' ? 2000 : 5;
+    dispatch(updateGameInfo({
+      p1:{ name: localConfig.player1 || 'Player 1', nWalls: localConfig.walls || 10, avatar: 1 },
+      p2:{ name: localConfig.player2 || 'AI', nWalls: localConfig.walls || 10, avatar: 1, difficulty: difficulty },
+      boardSize: localConfig.boardSize,
+      mode: settingsState || 'quick',
+    }))
+  }, [localConfig, settingsState, aiLevel]);
 
   return (
     <div className="text-white min-h-screen flex flex-col justify-between bg-[#0e0e11] px-4 py-8">
