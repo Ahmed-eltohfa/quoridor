@@ -1,72 +1,166 @@
 import { useState } from 'react';
 import { FcGoogle } from 'react-icons/fc';
+import avatar1 from '../assets/avatar1.png';
+import avatar2 from '../assets/avatar2.png'; 
+import avatar3 from '../assets/avatar3.png';
+import avatar4 from '../assets/avatar4.png';
+import avatar5 from '../assets/avatar5.png';
+import avatar6 from '../assets/avatar6.png';
+import axios from 'axios';
 
 export default function Auth() {
-  const [isLogin, setIsLogin] = useState(true);
+    const [isLogin, setIsLogin] = useState(true);
+    const avatars = [
+        avatar1, avatar2, avatar3, avatar4, avatar5, avatar6
+    ];
+    const [selectedAvatar, setSelectedAvatar] = useState(null);
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
-  const toggleForm = () => setIsLogin(!isLogin);
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        if (name === 'username') setUsername(value);
+        else if (name === 'email') setEmail(value);
+        else if (name === 'password') setPassword(value);
+    };
 
-  const handleGoogleLogin = () => {
-    // integrate with Firebase or OAuth here
-    console.log('Google login clicked');
-  };
+    const toggleForm = () => setIsLogin(!isLogin);
 
-  return (
-    <div className="min-h-screen bg-[#0e0e11] text-white flex flex-col items-center justify-center px-4">
-      <div className="w-full max-w-md bg-[#1a1a1f] p-8 rounded-lg shadow-xl">
-        <h1 className="text-2xl font-bold mb-6 text-center">
-          {isLogin ? 'Login to Your Account' : 'Create a New Account'}
-        </h1>
+    const handleGoogleLogin = () => {
+        // integrate with Firebase or OAuth here
+        console.log('Google login clicked');
+    };
 
-        <form className="space-y-4">
-          {!isLogin && (
-            <input
-              type="text"
-              placeholder="Username"
-              className="w-full px-4 py-2 rounded bg-[#2b2b31] text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          )}
-          <input
-            type="email"
-            placeholder="Email"
-            className="w-full px-4 py-2 rounded bg-[#2b2b31] text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            className="w-full px-4 py-2 rounded bg-[#2b2b31] text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+    const handleBtnSubmit = async (e) => {
+        e.preventDefault();
+        // Handle form submission logic here
+        if (isLogin) {
+            console.log('Logging in...');
+        } 
+        else {
+            console.log('Signing up...');
+            if (selectedAvatar === null) {
+                alert('Please select an avatar');
+                return;
+            }
+            if (!username || !email || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+            // console.log(import.meta.env.VITE_BACKEND_URL);
+            const registerUser = async () => {
+                try {
+                    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}`, {
+                        username,
+                        email,
+                        password,
+                        avatar: selectedAvatar
+                    });
+                    console.log('Registration successful:', response.data);
+                    //saving the token in localStorage
+                    if (response.data.success) {
+                        localStorage.setItem('token', response.data.token);
+                    }else{
+                        alert(response.data.message);
+                        return;
+                    }
+                } catch (error) {
+                    console.error('Error during registration:', error);
+                    alert('Registration failed. Please try again.');
+                }
+            };
+            await registerUser();
+        }
+        // Reset form or redirect after submission
+        setSelectedAvatar(null);
+        console.log('Form submitted', username, email, password, selectedAvatar);
+    }
 
-          <button
-            type="submit"
-            className="w-full bg-btn-primary hover:bg-btn-hover transition-colors py-2 rounded text-white font-medium cursor-pointer"
-            onClick={(e) =>{e.preventDefault()}}
+    return (
+        <div className="min-h-screen bg-[#0e0e11] text-white flex flex-col items-center justify-center px-4">
+        <div className="w-full max-w-md bg-[#1a1a1f] p-8 rounded-lg shadow-xl">
+            <h1 className="text-2xl font-bold mb-6 text-center">
+            {isLogin ? 'Login to Your Account' : 'Create a New Account'}
+            </h1>
+
+            <form className="space-y-4">
+                {!isLogin && (
+                    <input
+                        type="text"
+                        name="username"
+                        value={username}
+                        onChange={handleInputChange}
+                        placeholder="Username"
+                        className="w-full px-4 py-2 rounded bg-[#2b2b31] text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                )}
+                <input
+                    type="email"
+                    name="email"
+                    value={email}
+                    onChange={handleInputChange}
+                    placeholder="Email"
+                    className="w-full px-4 py-2 rounded bg-[#2b2b31] text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <input
+                    type="password"
+                    name="password"
+                    value={password}
+                    onChange={handleInputChange}
+                    placeholder="Password"
+                    className="w-full px-4 py-2 rounded bg-[#2b2b31] text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+
+                {!isLogin && (
+                    <div>
+                        <p className="text-white mb-2">Choose Your Avatar</p>
+                        <div className="grid grid-cols-5 gap-2">
+                            {avatars.map((avatar, index) => (
+                                <img
+                                    key={index}
+                                    src={avatar}
+                                    alt={`Avatar ${index + 1}`}
+                                    onClick={() => setSelectedAvatar(index)}
+                                    className={`w-12 h-12 rounded-full cursor-pointer object-cover border-2 transition 
+                                        ${selectedAvatar === index ? 'border-blue-500' : 'border-transparent'}
+                                        hover:border-blue-300`}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                <button
+                    type="submit"
+                    className="w-full bg-btn-primary hover:bg-btn-hover transition-colors py-2 rounded text-white font-medium cursor-pointer"
+                    onClick={handleBtnSubmit}
+                >
+                    {isLogin ? 'Login' : 'Sign Up'}
+                </button>
+            </form>
+
+            <div className="my-6 flex items-center justify-center gap-2 text-gray-400 text-sm">
+            <span className="border-b border-gray-600 w-1/5"></span>
+            <span>or</span>
+            <span className="border-b border-gray-600 w-1/5"></span>
+            </div>
+
+            <button
+            onClick={handleGoogleLogin}
+            className="w-full flex items-center justify-center gap-3 bg-white text-black py-2 rounded hover:bg-gray-300 cursor-pointer transition-colors"
             >
-            {isLogin ? 'Login' : 'Sign Up'}
-          </button>
-        </form>
+            <FcGoogle className="text-xl" />
+            Continue with Google
+            </button>
 
-        <div className="my-6 flex items-center justify-center gap-2 text-gray-400 text-sm">
-          <span className="border-b border-gray-600 w-1/5"></span>
-          <span>or</span>
-          <span className="border-b border-gray-600 w-1/5"></span>
+            <p className="text-center text-gray-400 text-sm mt-6">
+            {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}
+            <button onClick={toggleForm} className="text-blue-300 hover:underline cursor-pointer">
+                {isLogin ? 'Sign Up' : 'Login'}
+            </button>
+            </p>
         </div>
-
-        <button
-          onClick={handleGoogleLogin}
-          className="w-full flex items-center justify-center gap-3 bg-white text-black py-2 rounded hover:bg-gray-300 cursor-pointer transition-colors"
-        >
-          <FcGoogle className="text-xl" />
-          Continue with Google
-        </button>
-
-        <p className="text-center text-gray-400 text-sm mt-6">
-          {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}
-          <button onClick={toggleForm} className="text-blue-300 hover:underline cursor-pointer">
-            {isLogin ? 'Sign Up' : 'Login'}
-          </button>
-        </p>
-      </div>
-    </div>
-  );
+        </div>
+    );
 }

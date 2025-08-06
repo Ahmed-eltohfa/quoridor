@@ -5,7 +5,7 @@ import { generateToken } from '../utils/genToken.js';
 
 // POST /signup
 export const signup = async (req, res) => {
-    const { username, email, password } = req.body;
+    const { username, email, password, avatar } = req.body;
 
     const exists = await User.findOne({ username });
     if (exists)
@@ -18,6 +18,7 @@ export const signup = async (req, res) => {
         email,
         password: hashed,
         isGuest: false,
+        avatar: avatar || 0, // default avatar if not provided
     });
 
     const token = await generateToken(user);

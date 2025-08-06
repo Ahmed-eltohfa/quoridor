@@ -9,10 +9,7 @@ const Navbar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const menuRef = useRef();
     const navigate = useNavigate();
-
-    const handelProfileClick = () => {
-        navigate('/profile');
-    }
+    const isLoggedIn = false;
 
     useEffect(() => {
         function handleClickOutside(event) {
@@ -53,7 +50,7 @@ const Navbar = () => {
         {/* Left: Logo */}
         <div className="flex w-[190px] overflow-hidden max-h-full py-0 items-center">
             {/* Mobile Burger Icon */}
-            <div className="md:hidden order-0 flex items-center cursor-pointer">
+            <div className="lg:hidden order-0 flex items-center cursor-pointer">
                 <button onClick={() => setMenuOpen(!menuOpen)} className="text-gray-300 hover:text-white text-xl cursor-pointer">
                 <FaBars />
                 </button>
@@ -67,7 +64,7 @@ const Navbar = () => {
 
 
         {/* Desktop Nav Links */}
-        <div className="hidden md:flex space-x-6 lg:-translate-x-[5%]">
+        <div className="hidden lg:flex space-x-6 lg:-translate-x-[5%]">
             {navItems.map((item) => (
             <Link
                 key={item.path}
@@ -85,13 +82,27 @@ const Navbar = () => {
         </div>
 
         {/* Right: Profile Picture (Desktop) */}
-        <div className={`flex items-center cursor-pointer`} onClick={()=>{handelProfileClick()}}>
-            <img
-            src={profilePic}
-            alt="Profile"
-            className="h-8 w-8 rounded-full object-cover ring-2 ring-blue-500"
-            />
-        </div>
+        {isLoggedIn ? (
+            <div
+                className="flex items-center cursor-pointer"
+                onClick={() => navigate('/profile')}
+            >
+                <img
+                    src={profilePic}
+                    alt="Profile"
+                    className="h-8 w-8 rounded-full object-cover ring-2 ring-blue-500"
+                />
+            </div>
+        ) : (
+            <div className="flex gap-3">
+                <button
+                    className="px-[7px] py-[5px] md:px-4 md:py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                    onClick={() => navigate('/login')}
+                >
+                    LogIn | SignUp
+                </button>
+            </div>
+        )}
 
         </nav>
         {/* Mobile Dropdown Menu */}
