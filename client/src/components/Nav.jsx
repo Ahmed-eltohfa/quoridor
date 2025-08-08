@@ -3,13 +3,27 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo2.png';
 import profilePic from '../assets/avatars.png';
 import { FaHome, FaGamepad, FaTrophy, FaUserFriends, FaCog, FaUser, FaBars } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+import avatar1 from '../assets/avatar1.png';
+import avatar2 from '../assets/avatar2.png'; 
+import avatar3 from '../assets/avatar3.png';
+import avatar4 from '../assets/avatar4.png';
+import avatar5 from '../assets/avatar5.png';
+import avatar6 from '../assets/avatar6.png';
+import { clearToken, setUser } from '../rtk/slices/authSlice';
 
 const Navbar = () => {
     const location = useLocation();
     const [menuOpen, setMenuOpen] = useState(false);
     const menuRef = useRef();
     const navigate = useNavigate();
-    const isLoggedIn = false;
+    const isLoggedIn = useSelector((state) => state.auth.token);
+    const user = useSelector((state) => state.auth.user);
+    const dispatch = useDispatch();
+
+    const avatars = [
+        avatar1, avatar2, avatar3, avatar4, avatar5, avatar6
+    ];
 
     useEffect(() => {
         function handleClickOutside(event) {
@@ -85,10 +99,19 @@ const Navbar = () => {
         {isLoggedIn ? (
             <div
                 className="flex items-center cursor-pointer"
-                onClick={() => navigate('/profile')}
-            >
+                >
+                <button
+                    className="px-[7px] py-[5px] md:px-4 md:py-2 mr-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                    onClick={() => {
+                        dispatch(clearToken());
+                        dispatch(setUser(null));
+                    }}
+                    >
+                    Logout
+                </button>
                 <img
-                    src={profilePic}
+                    onClick={() => navigate('/profile')}
+                    src={avatars[user?.avatar] || profilePic}
                     alt="Profile"
                     className="h-8 w-8 rounded-full object-cover ring-2 ring-blue-500"
                 />

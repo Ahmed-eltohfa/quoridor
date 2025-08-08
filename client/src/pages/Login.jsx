@@ -7,6 +7,9 @@ import avatar4 from '../assets/avatar4.png';
 import avatar5 from '../assets/avatar5.png';
 import avatar6 from '../assets/avatar6.png';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setToken } from '../rtk/slices/authSlice';
 
 export default function Auth() {
     const [isLogin, setIsLogin] = useState(true);
@@ -17,6 +20,10 @@ export default function Auth() {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -37,6 +44,31 @@ export default function Auth() {
         // Handle form submission logic here
         if (isLogin) {
             console.log('Logging in...');
+            if (!email || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+            const loginUser = async () => {
+                try {
+                    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}api/auth/login`, {
+                        email,
+                        password
+                    });
+                    console.log('Login successful:', response.data);
+                    //saving the token in localStorage
+                    if (response.data.success) {
+                        dispatch(setToken(response.data.token));
+                        navigate('/');
+                    }else{
+                        alert(response.data.message);
+                        return;
+                    }
+                } catch (error) {
+                    console.error('Error during login:', error);
+                    alert('Login failed. Please try again.');
+                }
+            }
+            await loginUser();
         } 
         else {
             console.log('Signing up...');
@@ -51,7 +83,7 @@ export default function Auth() {
             // console.log(import.meta.env.VITE_BACKEND_URL);
             const registerUser = async () => {
                 try {
-                    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}`, {
+                    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}api/auth/signup`, {
                         username,
                         email,
                         password,
@@ -60,7 +92,8 @@ export default function Auth() {
                     console.log('Registration successful:', response.data);
                     //saving the token in localStorage
                     if (response.data.success) {
-                        localStorage.setItem('token', response.data.token);
+                        dispatch(setToken(response.data.token));
+                        navigate('/');
                     }else{
                         alert(response.data.message);
                         return;
@@ -74,6 +107,10 @@ export default function Auth() {
         }
         // Reset form or redirect after submission
         setSelectedAvatar(null);
+        setUsername('');
+        setEmail('');
+        setPassword('');
+
         console.log('Form submitted', username, email, password, selectedAvatar);
     }
 
@@ -103,14 +140,23 @@ export default function Auth() {
                     placeholder="Email"
                     className="w-full px-4 py-2 rounded bg-[#2b2b31] text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                <input
-                    type="password"
-                    name="password"
-                    value={password}
-                    onChange={handleInputChange}
-                    placeholder="Password"
-                    className="w-full px-4 py-2 rounded bg-[#2b2b31] text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+                <div className="relative">
+                    <input
+                        type={showPassword ? 'text' : 'password'}
+                        name="password"
+                        value={password}
+                        onChange={handleInputChange}
+                        placeholder="Password"
+                        className="w-full px-4 py-2 rounded bg-[#2b2b31] text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                    >
+                        {showPassword ? '🙈' : '👁️'}
+                    </button>
+                </div>
 
                 {!isLogin && (
                     <div>

@@ -17,8 +17,40 @@ import Game from './pages/Game';
 import Footer from './components/Footer.jsx';
 import Play from './pages/Play.jsx';
 import ScrollToTop from './components/ScrollToTop.jsx';
+import { setUser } from './rtk/slices/authSlice.js';
+import axios from 'axios';
 
 function App() {
+
+  const token = useSelector((state) => state.auth.token);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!token) return;
+
+    const getUser = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}api/auth/me`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+
+        const userData = response.data.user;
+        dispatch(setUser(userData));
+        localStorage.setItem("user", JSON.stringify(userData));
+        console.log("User data fetched successfully:", userData);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    getUser();
+  }, [token, dispatch]); // Only run when token changes
+
 
   return (
     <>
