@@ -34,9 +34,25 @@ export default function Auth() {
 
     const toggleForm = () => setIsLogin(!isLogin);
 
-    const handleGoogleLogin = () => {
-        // integrate with Firebase or OAuth here
-        console.log('Google login clicked');
+    const handleGuestLogin = () => {
+        const guestSignup = async () => {
+            try {
+                const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}api/auth/guest-register`);
+                console.log('Guest registration successful:', response.data);
+                //saving the token in localStorage
+                if (response.data.success) {
+                    dispatch(setToken(response.data.token));
+                    navigate('/');
+                }else{
+                    alert(response.data.message);
+                    return;
+                }
+            } catch (error) {
+                console.error('Error during guest registration:', error);
+                alert('Guest registration failed. Please try again.');
+            }
+        }
+        guestSignup();
     };
 
     const handleBtnSubmit = async (e) => {
@@ -187,18 +203,19 @@ export default function Auth() {
             </form>
 
             <div className="my-6 flex items-center justify-center gap-2 text-gray-400 text-sm">
-            <span className="border-b border-gray-600 w-1/5"></span>
-            <span>or</span>
-            <span className="border-b border-gray-600 w-1/5"></span>
+                <span className="border-b border-gray-600 w-1/5"></span>
+                <span>or</span>
+                <span className="border-b border-gray-600 w-1/5"></span>
             </div>
 
             <button
-            onClick={handleGoogleLogin}
-            className="w-full flex items-center justify-center gap-3 bg-white text-black py-2 rounded hover:bg-gray-300 cursor-pointer transition-colors"
+                onClick={handleGuestLogin}
+                className="w-full flex items-center justify-center gap-3 bg-btn-secondary text-white py-2 rounded hover:bg-secondary-hover cursor-pointer transition-colors"
             >
-            <FcGoogle className="text-xl" />
-            Continue with Google
+                <span className="text-xl">👤</span>
+                Continue as Guest
             </button>
+
 
             <p className="text-center text-gray-400 text-sm mt-6">
             {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}

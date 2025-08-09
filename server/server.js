@@ -25,7 +25,7 @@ const io = new SocketIO(server, {
 // Middlewares
 app.use(cors());
 app.use(express.json());
-io.use(socketAuth); // authenticate socket connections
+// io.use(socketAuth); // authenticate socket connections
 
 // db connection
 connectDB();

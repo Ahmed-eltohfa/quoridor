@@ -6,11 +6,37 @@ import avatar4 from '../assets/avatar4.png';
 import avatar5 from '../assets/avatar5.png';
 import avatar6 from '../assets/avatar6.png';
 import { useEffect, useState } from 'react';
+import { socket } from '../utils/socket';
+
 
 const avatars = [avatar1,avatar2, avatar3, avatar4,avatar5, avatar6];
 
 export default function Waiting() {
   const [currentAvatar, setCurrentAvatar] = useState(0);
+
+  useEffect(() => {
+    socket.on("messageFromServer", (data) => {
+      console.log("Server says:", data);
+    });
+
+    return () => {
+      socket.off("messageFromServer");
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleMatchFound = (matchData) => {
+      console.log("Match found!", matchData);
+    };
+
+    // Listen for the event
+    socket.on("startGame", handleMatchFound);
+
+    // Cleanup only the listener you added
+    return () => {
+      socket.off("startGame", handleMatchFound);
+    };
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -21,6 +47,15 @@ export default function Waiting() {
 
   return (
     <div className="min-h-screen bg-[#0e0e11] text-white flex flex-col items-center justify-center px-4 text-center animate-fade-in">
+      <button
+      className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4'
+      onClick={() => {
+        socket.emit("joinGame", { username: "testUser", userId: "testUserId" });
+        console.log("Join game trigger sent");
+      }}
+      >
+        TEST JOIN GAME TRIGERR
+      </button>
       <div className="flex items-center gap-10 mb-10">
         {/* Player avatar */}
         <div className="flex flex-col items-center">

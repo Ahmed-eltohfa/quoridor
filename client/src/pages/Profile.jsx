@@ -1,18 +1,38 @@
 import { FaEdit, FaTrophy, FaGamepad, FaChartLine, FaUserAlt, FaCalendarAlt } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
+import avatar1 from '../assets/avatar1.png';
+import avatar2 from '../assets/avatar2.png'; 
+import avatar3 from '../assets/avatar3.png';
+import avatar4 from '../assets/avatar4.png';
+import avatar5 from '../assets/avatar5.png';
+import avatar6 from '../assets/avatar6.png';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 export default function Profile() {
+  const user = useSelector((state) => state.auth.user);
+  useEffect(()=>{
+    if (!user) {
+      // Redirect to login if user is not logged in
+      navigate('/login');
+    }
+  }, [user]);
+  const avatars = [
+    avatar1, avatar2, avatar3, avatar4, avatar5, avatar6
+  ];
+  const navigate = useNavigate();
+  
   return (
     <div className="min-h-screen bg-[#0e0e11] text-white py-12 px-6 flex flex-col items-center">
       <div className="w-full max-w-4xl">
         <div className="flex flex-col items-center mb-8">
           <img
-            src="https://i.pravatar.cc/100?img=11"
+            src={avatars[user?.avatar] || avatar1} // Fallback to avatar1 if no avatarIndex
             alt="Profile"
             className="w-24 h-24 rounded-full border-4 border-gray-700 shadow-lg"
           />
-          <h2 className="text-2xl font-bold mt-4">Alex Turner</h2>
-          <p className="text-gray-400">@alex_turner</p>
-          <button className="mt-3 px-4 py-1 rounded-full bg-gray-700 hover:bg-gray-600 text-sm flex items-center gap-2 cursor-pointer">
+          <h2 className="text-2xl font-bold mt-4">{user.username}</h2>
+          <button className="mt-3 px-4 py-1 rounded-full bg-gray-700 hover:bg-gray-600 text-sm flex items-center gap-2 cursor-pointer" onClick={()=>{navigate('/settings')}}>
             <FaEdit /> Edit Profile
           </button>
         </div>
@@ -20,18 +40,18 @@ export default function Profile() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center mb-10">
           <div className="bg-btn-secondary hover:bg-secondary-hover rounded-lg p-4 flex flex-col items-center">
             <FaGamepad className="text-xl mb-2 text-blue-400" />
-            <div className="text-2xl font-bold">120</div>
+            <div className="text-2xl font-bold">{user.totalGames}</div>
             <div className="text-gray-400">Games Played</div>
           </div>
           <div className="bg-btn-secondary hover:bg-secondary-hover rounded-lg p-4 flex flex-col items-center">
             <FaChartLine className="text-xl mb-2 text-green-400" />
-            <div className="text-2xl font-bold">60%</div>
+            <div className="text-2xl font-bold">{user.totalGames > 0 ? (Math.floor((user.wins / user.totalGames)*100)) : '-'}</div>
             <div className="text-gray-400">Win Rate</div>
           </div>
           <div className="bg-btn-secondary hover:bg-secondary-hover rounded-lg p-4 flex flex-col items-center">
             <FaTrophy className="text-xl mb-2 text-yellow-400" />
-            <div className="text-2xl font-bold">40</div>
-            <div className="text-gray-400">Achievements</div>
+            <div className="text-2xl font-bold">{user.rank > 0 ? user.rank : 'WTF Dude'}</div>
+            <div className="text-gray-400">Rank</div>
           </div>
         </div>
 
