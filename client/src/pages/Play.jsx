@@ -8,6 +8,8 @@ import WallNode from '../components/WallNode';
 import avatar from '../assets/avatar1.png'
 import { useDispatch, useSelector } from 'react-redux';
 import { updateValidMoves } from '../rtk/slices/gameSlice';
+import { socket } from '../utils/socket';
+
 
 function Play() {
 
@@ -18,13 +20,40 @@ function Play() {
 
     const dispatch = useDispatch();
     const gameInfo = useSelector((state => state.game.gameInfo));
+    const gameSettings = useSelector(state => state.settings.gameMode);
     useEffect(()=>{
         console.log(gameInfo);
+        console.log(gameSettings);
     },[gameInfo]);
     
-
+    
     const game = useRef(new Game(gameInfo));
-    // console.log(game);
+
+    useEffect(() => {
+        socket.on("invalidMove", (data) => {
+            console.log("Server says:", data);
+        });
+        
+        socket.on("gameOver", (data) => {
+            console.log("Server says:", data);
+        });
+        
+        socket.on("gameUpdated", (data) => {
+            console.log("Server says:", data);
+            if (data.success) {
+                if (data.gameState.move && data.gameState.move.length !== game.current.moves[game.current.moves.length - 1]) {
+                    const move = data.gameState.move;
+                    game.current.move(move);
+                    triggerRender();
+                }
+            }
+        });
+        return () => {
+            socket.off("invalidMove");
+            socket.off("gameOver");
+            socket.off("gameUpdated");
+        };
+    }, []);
     
     const [, forceUpdate] = useState(0);
 

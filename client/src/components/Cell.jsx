@@ -1,10 +1,13 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { trigger, updateValidMoves, updateValidWalls } from "../rtk/slices/gameSlice";
+import { socket } from '../utils/socket';
+
 
 export default function Cell({ player, offset, size, game, position,triggerRender }) {
     
     const gamedata = useSelector((state) => state.game.validMoves);
     const gameMode = useSelector((state) => state.settings.gameMode);
+    const playerNumOnline = useSelector((state) => state.settings.playerNumifOnline);
     const dispatch = useDispatch();
 
     let validMoves = [];
@@ -12,11 +15,11 @@ export default function Cell({ player, offset, size, game, position,triggerRende
     const getMoves = () => {
         dispatch(updateValidWalls([]));
         dispatch(trigger());
-        // console.log(size - position.i,position.j+1);
+        if (!(gameMode === 'quick' && playerNumOnline == player)) {
+            return;
+        }
         if (game.current.isP1Turn && player === '1' || !game.current.isP1Turn && player === '2') {
-            // console.log(game.current.isP1Turn,player,game.current);
-            
-            // console.log('turno');
+
             if (player == "1") {
                 validMoves = game.current.p1.getValidMoves(game.current).filter(move => move[0] === 'p');
             }else if (player == "2"){
@@ -28,6 +31,7 @@ export default function Cell({ player, offset, size, game, position,triggerRende
                 return [y, z]; // Convert to board coordinates
             })
             dispatch(updateValidMoves(validMoves));
+
         } else {
             dispatch(updateValidMoves([]));
             // console.log("Not your turn");
@@ -50,14 +54,18 @@ export default function Cell({ player, offset, size, game, position,triggerRende
         
         // game.current.move(moveStr);
         await console.log(game.current.move(String(moveStr)));
-        dispatch(updateValidMoves([]));
-        triggerRender();
+        await dispatch(updateValidMoves([]));
+        await triggerRender();
         if (gameMode === 'ai' && !game.current.isP1Turn) {
             // console.log('AI Move');
             console.log(game.current.move(String(game.current.p2.smartMove(game.current))));
         }        
         dispatch(updateValidMoves([]));
         triggerRender();
+        if (gameMode === 'quick') {
+            // send the move to the server
+            socket.emit('move', { move: moveStr });
+        }
     }
     
     return (

@@ -49,7 +49,7 @@ export default function Auth() {
                 }
             } catch (error) {
                 console.error('Error during guest registration:', error);
-                alert('Guest registration failed. Please try again.');
+                alert('Guest registration failed. Please try again.', error);
             }
         }
         guestSignup();

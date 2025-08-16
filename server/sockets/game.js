@@ -17,7 +17,9 @@ const setupGameSocket = (io, socket) => {
         }
         const player = {
             id: userId,
-            username,
+            username: username,
+            avatar: data.avatar || 0, // Use a default avatar if not provided
+            rank: data.rank || 0, // Use a default rank if not provided
         };
 
         gameManager.handleNewPlayer(socket, player);

@@ -21,7 +21,7 @@ class GameManager {
             const game = new Game({
                 p1: { name: this.waitingPlayer.user.username },
                 p2: { name: user.username },
-                boardSize: 3,
+                boardSize: 9,
             });
 
             this.games.set(roomId, {
@@ -42,6 +42,7 @@ class GameManager {
                 message: 'Match found',
                 roomId,
                 gameState,
+                players: [this.waitingPlayer.user, user],
             });
             console.log("suiiii");
 
@@ -141,7 +142,6 @@ class GameManager {
             updatePlayerStats(user1, user2, winner, current);
             this.removeGame(gameData.roomId);
 
-            return;
         }
 
         // Broadcast the updated state

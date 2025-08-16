@@ -7,12 +7,19 @@ import avatar5 from '../assets/avatar5.png';
 import avatar6 from '../assets/avatar6.png';
 import { useEffect, useState } from 'react';
 import { socket } from '../utils/socket';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateGameInfo } from '../rtk/slices/gameSlice';
+import { useNavigate } from 'react-router-dom';
+import { updatePlayerNum } from '../rtk/slices/settingsSlice';
 
 
 const avatars = [avatar1,avatar2, avatar3, avatar4,avatar5, avatar6];
 
 export default function Waiting() {
   const [currentAvatar, setCurrentAvatar] = useState(0);
+  const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     socket.on("messageFromServer", (data) => {
@@ -27,6 +34,21 @@ export default function Waiting() {
   useEffect(() => {
     const handleMatchFound = (matchData) => {
       console.log("Match found!", matchData);
+      if (matchData.success === false) {
+        console.error("Error finding match:", matchData.message);
+        return;
+      }
+      else{
+        // const opponent = matchData.players[0].id === user._id ? matchData.players[1] : matchData.players[0];
+        dispatch(updateGameInfo({
+          p1: { name: matchData.players[0].username, nWalls: 10, avatar: matchData.players[0].avatar }, // Player 1 info
+          p2: { name: matchData.players[1].username, nWalls: 10, avatar: matchData.players[1].avatar, }, // Player 2 info
+          boardSize: 9,
+        }))
+        dispatch(updatePlayerNum(matchData.players[0].id === user._id ? 1 : 2)); // Update player number based on user ID
+        // Redirect to the game page 
+        navigate('/play');
+      }
     };
 
     // Listen for the event
@@ -50,7 +72,7 @@ export default function Waiting() {
       <button
       className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4'
       onClick={() => {
-        socket.emit("joinGame", { username: "testUser", userId: "testUserId" });
+        socket.emit("joinGame", { username: user.username, userId: user._id, rank: user.rank, avatar: user.avatar });
         console.log("Join game trigger sent");
       }}
       >

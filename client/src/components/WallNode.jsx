@@ -1,12 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
 import { trigger, updateValidMoves, updateValidWalls } from "../rtk/slices/gameSlice";
 import { useEffect } from "react";
+import { socket } from '../utils/socket';
 
 export default function WallNode({ walls, position, size, game, triggerRender }) {
 
     const validWalls = useSelector((state) => state.game);
     const triggerd = useSelector((state) => state.game.removeClass);
     const gameMode = useSelector((state) => state.settings.gameMode);
+    const playerNumOnline = useSelector((state) => state.settings.playerNumifOnline);
     const dispatch = useDispatch();
 
     useEffect(()=>{        
@@ -49,6 +51,12 @@ export default function WallNode({ walls, position, size, game, triggerRender })
         // console.log(e.target)
         dispatch(updateValidMoves([]));
         await dispatch(trigger());
+        if (gameMode === 'quick') {
+            const playerToPlay = game.current.isP1Turn ? '1' : '2';
+            if (playerNumOnline != playerToPlay) {
+                return;
+            }
+        }
         // console.log(e.target.parentNode)
         if (e.target.parentNode.classList.contains('wall-clicked')) {
             e.target.parentNode.classList.remove('wall-clicked');
@@ -68,6 +76,9 @@ export default function WallNode({ walls, position, size, game, triggerRender })
                             console.log(game.current.move(String(game.current.p2.smartMove(game.current))));
                             dispatch(updateValidWalls([]));
                             triggerRender();
+                        }
+                        if (gameMode === 'quick') {
+                            socket.emit('move', { move: wall.move });
                         }
 
                         return;
@@ -124,9 +135,11 @@ export default function WallNode({ walls, position, size, game, triggerRender })
         dispatch(updateValidWalls(aroundAvilableWalls));
         triggerRender();
     }
+
     const isInAroundValidWalls = validWalls.validWalls.some(
         (wall) => wall.position[0] === i && wall.position[1] === j
     );
+
     return (
         <div 
             className={`xl:w-4 xl:h-4 md:w-2 ${i}-${j} md:h-2 h-1 w-1 wall ${num>0 ? 'wall-put':''} relative wall-${getWallSymbol(walls)}`}

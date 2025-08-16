@@ -32,7 +32,7 @@ export default function Game() {
       p1:{ name: localConfig.player1 || 'Player 1', nWalls: localConfig.walls || 10, avatar: 1 },
       p2:{ name: localConfig.player2 || 'Player 2', nWalls: localConfig.walls || 10, avatar: 1, difficulty: difficulty },
       boardSize: localConfig.boardSize,
-      mode: settingsState || 'quick',
+      mode: settingsState || 'local',
     }))
   }, [localConfig, settingsState, aiLevel]);
 
