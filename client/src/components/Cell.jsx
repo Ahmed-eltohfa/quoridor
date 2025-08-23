@@ -15,8 +15,11 @@ export default function Cell({ player, offset, size, game, position,triggerRende
     const getMoves = () => {
         dispatch(updateValidWalls([]));
         dispatch(trigger());
-        if (!(gameMode === 'quick' && playerNumOnline == player)) {
-            return;
+        if (gameMode === 'quick') {
+            const playerToPlay = game.current.isP1Turn ? '1' : '2';
+            if (playerNumOnline != playerToPlay) {
+                return;
+            }
         }
         if (game.current.isP1Turn && player === '1' || !game.current.isP1Turn && player === '2') {
 
