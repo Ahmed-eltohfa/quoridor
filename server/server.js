@@ -46,6 +46,7 @@ app.get('/', (req, res) => {
 })
 // Start the server
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`);
-});
+
+export default (req, res) => {
+    app(req, res);   // let Express handle the request
+};
