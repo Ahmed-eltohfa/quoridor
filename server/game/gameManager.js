@@ -44,7 +44,7 @@ class GameManager {
                 gameState,
                 players: [this.waitingPlayer.user, user],
             });
-            console.log("suiiii");
+            // console.log("suiiii");
 
 
             this.waitingPlayer = null; // reset
@@ -115,10 +115,10 @@ class GameManager {
             this.removeGame(gameData.roomId);
             return;
         }
-        game.printAllBoard();
+        // game.printAllBoard();
         const result = game.move(move);
-        console.log(result);
-        game.printAllBoard();
+        // console.log(result);
+        // game.printAllBoard();
 
 
         if (!result) {
