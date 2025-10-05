@@ -5,13 +5,15 @@ import winImg from '../assets/win.png';
 import loseImg from '../assets/lose.png';
 import drawImg from '../assets/draw.png';
 import { FaGamepad, FaLock } from 'react-icons/fa';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 
-const recentGames = [
-  { id: 1, opponent: 'Owen', status: 'Online', image: winImg },
-  { id: 2, opponent: 'Lily', status: 'Lost', image: loseImg },
-  { id: 3, opponent: 'Nathan', status: 'Won', image: drawImg },
-];
+// const recentGames = [
+//   { id: 1, opponent: 'Owen', status: 'Online', image: winImg },
+//   { id: 2, opponent: 'Lily', status: 'Lost', image: loseImg },
+//   { id: 3, opponent: 'Nathan', status: 'Won', image: drawImg },
+// ];
 
 const friends = [
   { id: 1, name: 'Owen', status: 'Online', avatar: avatars },
@@ -19,6 +21,14 @@ const friends = [
 ];
 
 export default function Home() {
+
+  const user = useSelector((state) => state.auth.user);
+  const [recentGames, setRecentGames] = useState([]);
+  
+  useEffect(()=>{
+    setRecentGames(user ? user.history.slice(0,3) :[]);
+  },[user])
+
   return (
     <div className="text-white space-y-10">
       {/* Hero Section */}
@@ -95,15 +105,15 @@ export default function Home() {
       <div>
         <h2 className="text-xl font-semibold mb-4">Recent Games</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 place-items-center">
-          {recentGames.map((game) => (
+          {recentGames.map((game,index) => (
             <div
-              key={game.id}
+              key={index}
               className="bg-btn-secondary rounded-xl overflow-hidden w-[250px] cursor-pointer hover:shadow-lg transition-all hover:-translate-y-1 box-shadow"
             >
-              <img src={game.image} alt={game.opponent} className="w-full h-48" />
+              <img src={game.result === 'win' ? winImg : loseImg} alt={game.opponent} className="w-full h-48" />
               <div className="p-4">
                 <h3 className="font-semibold">Game vs. {game.opponent}</h3>
-                <p className="text-sm text-gray-400">{game.status}</p>
+                <p className="text-sm text-gray-400 capitalize">{game.result}</p>
               </div>
             </div>
           ))}

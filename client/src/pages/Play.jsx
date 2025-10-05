@@ -9,6 +9,7 @@ import avatar from '../assets/avatar1.png'
 import { useDispatch, useSelector } from 'react-redux';
 import { updateValidMoves } from '../rtk/slices/gameSlice';
 import { socket } from '../utils/socket';
+import { useNavigate } from 'react-router-dom';
 
 
 function Play() {
@@ -18,6 +19,7 @@ function Play() {
         e.returnValue = ""; // required for Chrome
     });
 
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const gameInfo = useSelector((state => state.game.gameInfo));
     const gameSettings = useSelector(state => state.settings.gameMode);
@@ -112,6 +114,8 @@ function Play() {
 
     const onExit = ()=>{
         console.log('exit');
+        // navigate to home
+        navigate('/');
     }
 
     return (

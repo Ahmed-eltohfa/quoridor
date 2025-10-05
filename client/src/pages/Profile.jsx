@@ -8,6 +8,9 @@ import avatar5 from '../assets/avatar5.png';
 import avatar6 from '../assets/avatar6.png';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../rtk/slices/authSlice.js';
+import axios from 'axios';
 
 export default function Profile() {
   const user = useSelector((state) => state.auth.user);
@@ -21,6 +24,35 @@ export default function Profile() {
     avatar1, avatar2, avatar3, avatar4, avatar5, avatar6
   ];
   const navigate = useNavigate();
+  const token = useSelector((state) => state.auth.token);
+  const dispatch = useDispatch();
+
+  useEffect(() =>{
+    // refetch user data 
+    if (!token) return;
+
+    const getUser = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}api/auth/me`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+
+        const userData = response.data.user;
+        dispatch(setUser(userData));
+        localStorage.setItem("user", JSON.stringify(userData));
+        console.log("User data fetched successfully:", userData);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    getUser();
+  },[])
   
   return (
     <div className="min-h-screen bg-[#0e0e11] text-white py-12 px-6 flex flex-col items-center">
@@ -68,22 +100,16 @@ export default function Profile() {
                 </tr>
               </thead>
               <tbody>
-                {[
-                  { opponent: 'Sophia Clark', result: 'Win', date: '2024-07-26' },
-                  { opponent: 'Ethan Bennett', result: 'Loss', date: '2024-07-25' },
-                  { opponent: 'Olivia Carter', result: 'Win', date: '2024-07-24' },
-                  { opponent: 'Liam Foster', result: 'Loss', date: '2024-07-23' },
-                  { opponent: 'Ava Hayes', result: 'Win', date: '2024-07-22' },
-                ].map((game, index) => (
+                {user.history.map((game, index) => (
                   <tr key={index} className="border-b border-gray-800 hover:bg-[#1c1c22]">
                     <td className="p-3"><span className="inline-flex items-center gap-2"><FaGamepad /> Quoridor</span></td>
                     <td className="p-3 flex items-center gap-2"><FaUserAlt /> {game.opponent}</td>
                     <td className="p-3">
                       <span
                         className={`px-3 py-1 rounded-full text-white text-xs font-medium ${
-                          game.result === 'Win'
+                          game.result === 'Win' || game.result === 'win'
                             ? 'bg-green-600'
-                            : game.result === 'Loss'
+                            : game.result === 'Loss' || game.result === 'loss'
                             ? 'bg-red-600'
                             : 'bg-yellow-600'
                         }`}
@@ -91,7 +117,7 @@ export default function Profile() {
                         {game.result}
                       </span>
                     </td>
-                    <td className="p-3 flex items-center gap-2"><FaCalendarAlt /> {game.date}</td>
+                    <td className="p-3 flex items-center gap-2"><FaCalendarAlt /> {new Date(game.timestamp).toISOString().split("T")[0]}</td>
                   </tr>
                 ))}
               </tbody>

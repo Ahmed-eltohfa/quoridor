@@ -1,55 +1,96 @@
-import { FaCrown, FaMedal } from 'react-icons/fa'
-
-const topPlayers = [
-  { name: 'Noah Thompson', elo: 1750, medal: 'gold' },
-  { name: 'Olivia Bennett', elo: 1650, medal: 'silver' },
-  { name: 'Jackson Lewis', elo: 1600, medal: 'bronze' },
-]
-
-const otherPlayers = [
-  { name: 'Ethan Carter', elo: 1550 },
-  { name: 'Ava Martinez', elo: 1500 },
-  { name: 'Liam Harris', elo: 1480 },
-  { name: 'Sophia Clark', elo: 1450 },
-  { name: 'Isabella Walker', elo: 1420 },
-  { name: 'Lucas Hall', elo: 1400 },
-  { name: 'Mia Young', elo: 1380 },
-]
+import { FaCrown, FaMedal } from "react-icons/fa";
+import { useEffect, useState } from "react";
 
 const medalColor = {
-  gold: 'text-yellow-400',
-  silver: 'text-gray-300',
-  bronze: 'text-orange-400',
-}
+  gold: "text-yellow-400",
+  silver: "text-gray-300",
+  bronze: "text-orange-400",
+};
 
 export default function Leaderboard() {
+  const [topPlayers, setTopPlayers] = useState([]);
+  const [otherPlayers, setOtherPlayers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchLeaderboardData = async () => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}api/players/leaderboard`
+      );
+      const result = await response.json();
+
+      if (result.success && Array.isArray(result.leaderboard)) {
+        const data = result.leaderboard;
+
+        // split into top 3 and rest
+        setTopPlayers(data.slice(0, 3));
+        setOtherPlayers(data.slice(3, 10));
+      } else {
+        console.error("Invalid leaderboard response:", result);
+      }
+    } catch (e) {
+      console.error("Failed to fetch leaderboard data:", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchLeaderboardData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#0e0e11] text-white flex items-center justify-center">
+        <p>Loading leaderboard...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#0e0e11] text-white py-12 px-4 flex flex-col items-center">
-      <h1 className="text-3xl font-bold mb-10 text-center">Top Quoridor Players by Elo</h1>
+      <h1 className="text-3xl font-bold mb-10 text-center">
+        Top Quoridor Players by Elo
+      </h1>
 
-      {/* Top 3 podium */}
-      <div className="flex justify-center gap-10 mb-12">
-        {/* Silver */}
-        <div className="flex flex-col items-center">
-          <FaMedal className={`text-4xl ${medalColor.silver} mb-2`} />
-          <p className="font-semibold">{topPlayers[1].name}</p>
-          <p className="text-text-secondary">Elo: {topPlayers[1].elo}</p>
-        </div>
-        {/* Gold */}
-        <div className="flex flex-col items-center">
-          <FaCrown className={`text-5xl ${medalColor.gold} mb-2`} />
-          <p className="font-bold text-lg">{topPlayers[0].name}</p>
-          <p className="text-text-secondary">Elo: {topPlayers[0].elo}</p>
-        </div>
-        {/* Bronze */}
-        <div className="flex flex-col items-center">
-          <FaMedal className={`text-4xl ${medalColor.bronze} mb-2`} />
-          <p className="font-semibold">{topPlayers[2].name}</p>
-          <p className="text-text-secondary">Elo: {topPlayers[2].elo}</p>
-        </div>
-      </div>
+      {/* 🏆 Top 3 Players */}
+      {/* 🏆 Top 3 Players */}
+<div className="flex justify-center items-end gap-8 mb-12 flex-wrap">
+  {(() => {
+    // Arrange them: bronze (2nd index), gold (0th), silver (1st)
+    const ordered = [topPlayers[2], topPlayers[0], topPlayers[1]];
+    const medals = ["bronze", "gold", "silver"];
 
-      {/* Other players */}
+    return ordered.map((player, index) => {
+      if (!player) return null;
+      const medal = medals[index];
+      const isGold = medal === "gold";
+
+      return (
+        <div
+          key={player.username}
+          className={`bg-[#1b1b21] rounded-2xl shadow-lg p-6 flex flex-col items-center w-56 transition-transform duration-300 ${
+            isGold ? "scale-110 -translate-y-4" : ""
+          }`}
+        >
+                  {isGold ? (
+                    <FaCrown className={`text-5xl ${medalColor[medal]} mb-4`} />
+                  ) : (
+                    <FaMedal className={`text-4xl ${medalColor[medal]} mb-4`} />
+                  )}
+                  <h2 className="text-xl font-semibold">{player.username}</h2>
+                  <p className="text-sm text-gray-400 mb-2">Elo: {player.rank}</p>
+                  <p className="text-sm text-gray-400">
+                    {player.wins}W / {player.totalGames}G
+                  </p>
+                </div>
+              );
+            });
+          })()}
+        </div>
+
+
+      {/* 🧍 Other Players */}
       <div className="w-full max-w-2xl">
         <table className="w-full text-left border-collapse">
           <thead>
@@ -57,19 +98,27 @@ export default function Leaderboard() {
               <th className="py-2">Rank</th>
               <th>Player</th>
               <th>Elo</th>
+              <th>Wins / Games</th>
             </tr>
           </thead>
           <tbody>
             {otherPlayers.map((player, index) => (
-              <tr key={player.name} className="border-b border-gray-800 hover:bg-gray-800/50">
-                <td className="py-3">{index + 4}</td>
-                <td>{player.name}</td>
-                <td>{player.elo}</td>
+              <tr
+                key={player.username}
+                className="border-b border-gray-800 hover:bg-gray-800/50 transition-colors"
+              >
+                <td className="p-3">{index + 4}</td>
+                <td className="font-medium">{player.username}</td>
+                <td>{player.rank}</td>
+                <td className="text-gray-400">
+                  {player.wins}W / {player.totalGames}G
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
     </div>
-  )
+  );
 }
