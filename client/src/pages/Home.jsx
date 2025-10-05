@@ -26,7 +26,7 @@ export default function Home() {
   const [recentGames, setRecentGames] = useState([]);
   
   useEffect(()=>{
-    setRecentGames(user ? user.history.slice(0,3) :[]);
+    setRecentGames(user?.history ? user?.history.slice(0,3) :[]);
   },[user])
 
   return (
