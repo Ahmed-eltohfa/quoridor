@@ -129,6 +129,14 @@ class GameManager {
             return;
         }
 
+        // Broadcast the updated state
+        this.broadcastToRoom(gameData.roomId, "gameUpdated", {
+            success: true,
+            gameState: {
+                move,
+            },
+        });
+
         if (game.isGameOver) {
             this.broadcastToRoom(gameData.roomId, "gameOver", {
                 success: true,
@@ -144,13 +152,6 @@ class GameManager {
 
         }
 
-        // Broadcast the updated state
-        this.broadcastToRoom(gameData.roomId, "gameUpdated", {
-            success: true,
-            gameState: {
-                move,
-            },
-        });
     }
 
     removeGame(roomId) {
