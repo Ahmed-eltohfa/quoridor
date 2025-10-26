@@ -16,6 +16,13 @@ const UserSchema = new mongoose.Schema({
     avatar: { type: Number, default: 0 }, // index in frontend avatar list
     playerSince: { type: Date, default: Date.now },
 
+    friends: [{
+        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        status: { type: String, enum: ['pending', 'accepted'], default: 'pending' },
+        since: { type: Date, default: Date.now },
+        isIncoming: { type: Boolean, required: true } // Add this field
+    }],
+
     wins: { type: Number, default: 0 },
     losses: { type: Number, default: 0 },
     totalGames: { type: Number, default: 0 },
@@ -31,5 +38,13 @@ const UserSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
+
+UserSchema.pre('save', function (next) {
+    if (this.history.length > 100) {
+        this.history = this.history.slice(-100); // Keep only the last 100 items
+    }
+    next();
+});
+
 
 export default mongoose.model('User', UserSchema);

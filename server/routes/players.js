@@ -1,11 +1,25 @@
 import express from 'express';
-import { getLeaderboard, getUserProfile } from '../controllers/playerController.js';
+import {
+    getLeaderboard,
+    getUserProfile,
+    sendFriendRequest,
+    respondToFriendRequest,
+    getFriendsList,
+    getPendingFriendRequests
+} from '../controllers/playerController.js';
 import { asyncWrapper } from '../utils/asyncWrapper.js';
+import userAuth from '../middlewears/userAuth.js';
 
 const router = express.Router();
 
-// GET /api/users/:id/profile
+// Public routes
 router.get('/:id/profile', asyncWrapper(getUserProfile));
-// GET /api/users/leaderboard
 router.get('/leaderboard', asyncWrapper(getLeaderboard));
+
+// Protected friend-related routes
+router.post('/friends/request', userAuth, asyncWrapper(sendFriendRequest));
+router.post('/friends/respond', userAuth, asyncWrapper(respondToFriendRequest));
+router.get('/friends/list', userAuth, asyncWrapper(getFriendsList));
+router.get('/friends/pending', userAuth, asyncWrapper(getPendingFriendRequests));
+
 export default router;
