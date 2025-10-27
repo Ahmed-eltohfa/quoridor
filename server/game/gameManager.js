@@ -158,6 +158,53 @@ class GameManager {
         this.games.delete(roomId);
     }
 
+    createMatchBetweenUsers(userA, userB) {
+        const roomId = uuidv4();
+        const game = new Game({
+            p1: { name: userA.username },
+            p2: { name: userB.username },
+            boardSize: 9,
+        });
+
+        this.games.set(roomId, {
+            game,
+            players: [
+                { socket: null, user: userA },
+                { socket: null, user: userB }
+            ]
+        });
+
+        return roomId;
+    }
+
+    attachSocketToRoom(socket, roomId, socketUserId) {
+        const gameData = this.games.get(roomId);
+        if (!gameData) return false;
+
+        const player = gameData.players.find(p => String(p.user._id) === String(socketUserId));
+        if (!player) return false;
+
+        player.socket = socket;
+        socket.roomId = roomId;
+        socket.join(roomId);
+
+        // If both sockets are present, notify both players
+        const bothConnected = gameData.players.every(p => p.socket && typeof p.socket.emit === 'function');
+        if (bothConnected) {
+            const gameState = gameData.game.moves;
+            // safe broadcast: only emit to sockets that exist
+            for (const p of gameData.players) {
+                p.socket.emit('startGame', {
+                    success: true,
+                    message: 'Match ready',
+                    roomId,
+                    gameState,
+                    players: gameData.players.map(pp => pp.user)
+                });
+            }
+        }
+        return true;
+    }
 
 }
 
