@@ -50,6 +50,16 @@ export const getLeaderboard = async (req, res) => {
 }
 
 export const sendFriendRequest = async (req, res) => {
+    if (!req.body) {
+        return res.status(400).json({ success: false, message: "Request body required" });
+    }
+    if (!req.body.targetUserId) {
+        return res.status(400).json({ success: false, message: "targetUserId required" });
+    }
+    if (typeof req.body.targetUserId !== 'string') {
+        return res.status(400).json({ success: false, message: "targetUserId must be strings" });
+    }
+
     const { targetUserId } = req.body;
     const senderId = req.user.id; // Assuming you have auth middleware
 
@@ -93,6 +103,17 @@ export const sendFriendRequest = async (req, res) => {
 };
 
 export const respondToFriendRequest = async (req, res) => {
+
+    if (!req.body) {
+        return res.status(400).json({ success: false, message: "Request body required" });
+    }
+    if (!req.body.requestId || !req.body.accept) {
+        return res.status(400).json({ success: false, message: "requestId required" });
+    }
+    if (typeof req.body.requestId !== 'string') {
+        return res.status(400).json({ success: false, message: "requestId must be strings" });
+    }
+
     const { requestId, accept } = req.body;
     const userId = req.user.id; // Assuming you have auth middleware
 

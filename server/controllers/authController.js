@@ -5,6 +5,16 @@ import { generateToken } from '../utils/genToken.js';
 
 // POST /signup
 export const signup = async (req, res) => {
+    if (!req.body) {
+        return res.status(400).json({ success: false, message: "Request body required" });
+    }
+    if (!req.body.username || !req.body.email || !req.body.password) {
+        return res.status(400).json({ success: false, message: "Username, email and password required" });
+    }
+    if (typeof req.body.username !== 'string' || typeof req.body.email !== 'string' || typeof req.body.password !== 'string') {
+        return res.status(400).json({ success: false, message: "Username, email and password must be strings" });
+    }
+
     const { username, email, password, avatar } = req.body;
 
     const exists = await User.findOne({ username });
@@ -27,6 +37,16 @@ export const signup = async (req, res) => {
 
 // POST /login
 export const login = async (req, res) => {
+    if (!req.body) {
+        return res.status(400).json({ success: false, message: "Request body required" });
+    }
+    if (!req.body.email || !req.body.password) {
+        return res.status(400).json({ success: false, message: "Email and password required" });
+    }
+    if (typeof req.body.email !== 'string' || typeof req.body.password !== 'string') {
+        return res.status(400).json({ success: false, message: "Email and password must be strings" });
+    }
+
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });

@@ -2,6 +2,7 @@
 import gameManager from "../game/gameManager.js";
 import { updatePlayerStats } from "../utils/updateStates.js";
 import { v4 as uuidv4 } from 'uuid';
+import jwt from "jsonwebtoken";
 
 const userSockets = new Map(); // userId -> { socket, user }
 const pendingInvites = new Map(); // inviteId -> { fromId, toId, timeout }
@@ -9,16 +10,23 @@ const pendingInvites = new Map(); // inviteId -> { fromId, toId, timeout }
 const setupGameSocket = (io, socket) => {
     // console.log('in setup');
 
-    socket.on('register', (user) => {
-        // user should include at least { id, username, avatar, _id } or similar
-        if (!user || !user.id) return;
-        userSockets.set(String(user.id), { socket, user });
-        socket.userId = String(user.id);
+    socket.on('register', async ({ token }) => {
+        try {
+            const user = jwt.verify(token, process.env.JWT_SECRET);
+            userSockets.set(String(user.id), { socket, user });
+            socket.userId = String(user.id);
+            socket.emit('register:success', { success: true, user });
+        } catch (err) {
+            socket.emit('register:failed', { success: false, message: 'Invalid token' });
+        }
     });
 
     socket.on('invite:send', ({ targetUserId }) => {
         const fromId = socket.userId;
-        if (!fromId || !targetUserId) return;
+        if (!fromId || !targetUserId) {
+            socket.emit('invite:send:result', { success: false, message: 'Invalid data' });
+            return;
+        };
 
         const target = userSockets.get(String(targetUserId));
         if (!target) {

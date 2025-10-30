@@ -159,6 +159,7 @@ class GameManager {
     }
 
     createMatchBetweenUsers(userA, userB) {
+        // console.log('Creating match between', userA.username, 'and', userB.username);
         const roomId = uuidv4();
         const game = new Game({
             p1: { name: userA.username },
@@ -173,35 +174,40 @@ class GameManager {
                 { socket: null, user: userB }
             ]
         });
+        // console.log("room created")
 
         return roomId;
     }
 
     attachSocketToRoom(socket, roomId, socketUserId) {
+        // console.log("attaching socket ", socketUserId);
         const gameData = this.games.get(roomId);
         if (!gameData) return false;
+        // console.log("attaching socket 1", socketUserId);
 
-        const player = gameData.players.find(p => String(p.user._id) === String(socketUserId));
+        const player = gameData.players.find(p => String(p.user.id) === String(socketUserId));
         if (!player) return false;
+        // console.log("attaching socket 2", socketUserId);
 
         player.socket = socket;
         socket.roomId = roomId;
         socket.join(roomId);
+        // console.log(`Socket ${socket.id} joined room ${roomId}`);
 
         // If both sockets are present, notify both players
         const bothConnected = gameData.players.every(p => p.socket && typeof p.socket.emit === 'function');
         if (bothConnected) {
+            // console.log(`Both players connected in room ${roomId}`);
             const gameState = gameData.game.moves;
-            // safe broadcast: only emit to sockets that exist
-            for (const p of gameData.players) {
-                p.socket.emit('startGame', {
-                    success: true,
-                    message: 'Match ready',
-                    roomId,
-                    gameState,
-                    players: gameData.players.map(pp => pp.user)
-                });
+
+            this.broadcastToRoom(roomId, 'startGame', {
+                success: true,
+                message: 'Match ready',
+                roomId,
+                gameState,
+                players: gameData.players.map(pp => pp.user)
             }
+            );
         }
         return true;
     }

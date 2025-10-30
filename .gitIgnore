@@ -54,3 +54,6 @@ desktop.ini
 # Ignore compiled Python files
 *.pyc
 __pycache__/
+
+# user files
+test.json
