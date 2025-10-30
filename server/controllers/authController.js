@@ -160,5 +160,18 @@ export const getMe = async (req, res) => {
     const user = await User.findById(req.user.id).select('-password');
     if (!user) return res.status(404).json({ success: false, message: "User not found" });
 
-    res.json({ success: true, user });
+    // generate tip of the day and send along with user data
+    const tips = [
+        "Remember to take breaks during long gaming sessions!",
+        "Practice makes perfect – keep honing your skills!",
+        "Stay hydrated and maintain good posture while gaming.",
+        "Explore different strategies to find what works best for you.",
+        "Join gaming communities to connect with fellow players.",
+        "Set achievable goals to track your progress and improvement.",
+        "Customize your controls and settings for a comfortable experience.",
+        "Have fun and enjoy the gaming journey!"
+    ];
+    const tipOfTheDay = tips[Math.floor(Math.random() * tips.length)];
+
+    res.json({ success: true, user, tipOfTheDay });
 };

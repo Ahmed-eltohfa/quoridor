@@ -13,11 +13,16 @@ const setupGameSocket = (io, socket) => {
     socket.on('register', async ({ token }) => {
         try {
             const user = jwt.verify(token, process.env.JWT_SECRET);
+            if (!user || !user.id) throw new Error('Invalid token payload');
+            if (userSockets.has(String(user.id))) {
+                socket.emit('register:failed', { success: false, message: 'User already connected' });
+                return;
+            }
             userSockets.set(String(user.id), { socket, user });
             socket.userId = String(user.id);
             socket.emit('register:success', { success: true, user });
         } catch (err) {
-            socket.emit('register:failed', { success: false, message: 'Invalid token' });
+            socket.emit('register:failed', { success: false, message: 'Invalid token', error: err.message });
         }
     });
 
