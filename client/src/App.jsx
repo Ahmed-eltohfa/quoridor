@@ -19,7 +19,7 @@ import Play from './pages/Play.jsx';
 import ScrollToTop from './components/ScrollToTop.jsx';
 import { setUser } from './rtk/slices/authSlice.js';
 import axios from 'axios';
-import UserProfile from './pages/userProfile.jsx';
+import UserProfile from './pages/UserProfile.jsx';
 // new repo
 function App() {
 
