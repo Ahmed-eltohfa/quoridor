@@ -19,6 +19,7 @@ import Play from './pages/Play.jsx';
 import ScrollToTop from './components/ScrollToTop.jsx';
 import { setUser } from './rtk/slices/authSlice.js';
 import axios from 'axios';
+import UserProfile from './pages/userProfile.jsx';
 // new repo
 function App() {
 
@@ -70,6 +71,7 @@ function App() {
           <Route path="/leaderboard" element={<LeaderBoard />} />
           <Route path="/game" element={<Game />} />
           <Route path="/play" element={<Play />} />
+          <Route path='/user/:id' element={<UserProfile/>} />
           <Route path="*" element={<NotFound />} />
       </Routes>
     </div>

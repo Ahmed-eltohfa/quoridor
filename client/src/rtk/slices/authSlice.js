@@ -4,6 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     token: localStorage.getItem("token") || null,
     user: localStorage.getItem("user") || null, // you can preload this too if stored
+    friends: []
 };
 
 const authSlice = createSlice({
@@ -21,9 +22,12 @@ const authSlice = createSlice({
         setUser: (state, action) => {
             state.user = action.payload;
             localStorage.setItem("user", JSON.stringify(action.payload));
+        },
+        setFriends: (state, action) => {
+            state.friends = action.payload;
         }
     }
 });
 
-export const { setToken, clearToken, setUser } = authSlice.actions;
+export const { setToken, clearToken, setUser, setFriends } = authSlice.actions;
 export default authSlice.reducer;

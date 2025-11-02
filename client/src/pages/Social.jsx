@@ -1,18 +1,23 @@
 import { useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { avatars } from '../utils/avatars';
 
 export default function Social() {
   const [search, setSearch] = useState('');
-  const [friends, setFriends] = useState([
-    { name: 'Ethan Carter', status: 'Online', avatar: 'https://i.pravatar.cc/40?img=1' },
-    { name: 'Sophia Clark', status: 'Offline', avatar: 'https://i.pravatar.cc/40?img=2' },
-    { name: 'Liam Harper', status: 'Online', avatar: 'https://i.pravatar.cc/40?img=3' },
-    { name: 'Olivia Bennett', status: 'Offline', avatar: 'https://i.pravatar.cc/40?img=4' },
-  ]);
+  const friendsList = useSelector((state) => state.auth.friends);
+  console.log(friendsList);
+  
+  const navigate = useNavigate();
 
-  const filteredFriends = friends.filter(friend =>
-    friend.name.toLowerCase().includes(search.toLowerCase())
+  const filteredFriends = friendsList.filter(friend =>
+    friend.username?.toLowerCase().includes(search.toLowerCase())
   );
+
+  const openProfile = (friend) => {
+    navigate(`/user/${friend.id}`);
+  }
 
   return (
     <div className="min-h-screen bg-[#0e0e11] text-white py-12 px-6 flex flex-col items-center">
@@ -33,24 +38,24 @@ export default function Social() {
         <ul className="space-y-4">
           {filteredFriends.map((friend, index) => (
             <li
-              key={index}
+              key={friend.id || index}
               className="flex items-center justify-between bg-[#1a1a1f] p-4 rounded-lg"
             >
               <div className="flex items-center gap-4">
                 <img
-                  src={friend.avatar}
-                  alt={friend.name}
+                  src={avatars[friend.avatar] || avatars[0]}
+                  alt={friend.username}
                   className="w-10 h-10 rounded-full border border-gray-500"
                 />
                 <div>
-                  <div className="font-semibold">{friend.name}</div>
+                  <div className="font-semibold">{friend.username}</div>
                   <div className={`text-sm ${friend.status === 'Online' ? 'text-green-400' : 'text-gray-400'}`}>
-                    {friend.status}
+                    {friend.rank ? `Rank: ${friend.rank}` : 'No rank'}
                   </div>
                 </div>
               </div>
               <div className="flex gap-2">
-                <button className="px-3 py-1 text-sm bg-gray-700 hover:bg-gray-600 rounded-full flex items-center gap-1 cursor-pointer">
+                <button className="px-3 py-1 text-sm bg-gray-700 hover:bg-gray-600 rounded-full flex items-center gap-1 cursor-pointer" onClick={() => openProfile(friend)}>
                   Profile
                 </button>
                 <button className="px-3 py-1 text-sm bg-blue-600 hover:bg-blue-700 rounded-full flex items-center gap-1 cursor-pointer">

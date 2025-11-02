@@ -29,10 +29,12 @@ class Player {
 
     move(game) {
         if (this.isComputer) {
-            // basic placeholder for AI move logic
-            if (this.difficulty === "easy") {
+            // use normalized difficultyLevel instead of string checks
+            if (this.difficulty <= 1) {
                 return this.randomMove(game);
-            } else if (this.difficulty === "hard") {
+            } else if (this.difficulty <= 3) {
+                return this.getEasyMove(game);
+            } else {
                 return this.smartMove(game);
             }
         }
