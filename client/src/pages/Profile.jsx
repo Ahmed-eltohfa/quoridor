@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { setUser } from '../rtk/slices/authSlice.js';
+import { clearToken, setUser } from '../rtk/slices/authSlice.js';
 import axios from 'axios';
 import { avatars } from '../utils/avatars.js';
 
@@ -60,23 +60,11 @@ export default function Profile() {
   const handleEdit = () => navigate('/settings');
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    dispatch(clearToken());
     dispatch(setUser(null));
     navigate('/login');
   };
 
-  // quick avatar preview / local update (server save omitted for brevity)
-  const handleChangeAvatar = (delta) => {
-    if (!user) return;
-    setUpdatingAvatar(true);
-    const newIndex = ((user.avatar || 0) + delta + avatars.length) % avatars.length;
-    const patched = { ...user, avatar: newIndex };
-    dispatch(setUser(patched));
-    localStorage.setItem('user', JSON.stringify(patched));
-    // optionally call backend to persist avatar here
-    setTimeout(()=>setUpdatingAvatar(false), 400);
-  };
 
   const handelFriendClick = (friendId) => {
     navigate(`/user/${friendId}`);
@@ -99,13 +87,11 @@ export default function Profile() {
         <div className="bg-gradient-to-b from-[#0f1724] to-[#0b1220] rounded-xl p-6 flex flex-col items-center gap-4 shadow-xl">
           <div className="relative">
             <img src={avatars[user?.avatar] || avatars[0]} alt="Avatar" className="w-36 h-36 rounded-full border-4 border-black shadow-2xl" />
-            <div className="absolute -bottom-2 -right-2 bg-[#0b1220] rounded-full p-1 border border-gray-700">
-              <button onClick={() => handleChangeAvatar(-1)} className="px-2 py-1 text-xs bg-gray-800 rounded hover:bg-gray-700 mr-1">◀</button>
-              <button onClick={() => handleChangeAvatar(1)} className="px-2 py-1 text-xs bg-gray-800 rounded hover:bg-gray-700">▶</button>
-            </div>
+
           </div>
 
           <h1 className="text-2xl font-extrabold">{user?.username}</h1>
+          <div className="text-sm text-gray-300 text-center">Player ID: {user?._id}</div>
           <div className="text-sm text-gray-300">Joined {new Date(user?.playerSince).toLocaleDateString()}</div>
 
           <div className="w-full grid grid-cols-3 gap-3 mt-3">

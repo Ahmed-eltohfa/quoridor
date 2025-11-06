@@ -232,3 +232,86 @@ export const getPendingFriendRequests = async (req, res) => {
         }
     });
 };
+
+export const searchUsers = async (req, res) => {
+    // Require auth so we can return friend/request status relative to the viewer
+    const viewerId = req.user?.id;
+    if (!viewerId) {
+        return res.status(401).json({ success: false, message: 'Authentication required' });
+    }
+
+    const q = String(req.query.q || '').trim();
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.min(50, Math.max(5, parseInt(req.query.limit) || 20));
+    const skip = (page - 1) * limit;
+
+    // helper to safely build regex from user input
+    const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    // If no query, return empty list (avoid returning huge datasets). Frontend can request leaderboard separately.
+    if (!q) {
+        return res.json({ success: true, users: [], page, totalPages: 0, total: 0 });
+    }
+
+    const regex = new RegExp(escapeRegex(q), 'i');
+
+    // Build search filter: match by username (and optionally by _id if user pasted an id)
+    const searchFilter = {
+        $and: [
+            { _id: { $ne: viewerId } },       // exclude self
+            { isGuest: false },               // exclude guest accounts from search results
+            {
+                $or: [
+                    { username: regex },
+                    { _id: q.match(/^[0-9a-fA-F]{24}$/) ? q : undefined } // allow direct id search
+                ].filter(Boolean)
+            }
+        ]
+    };
+
+    // Get viewer's friend list once to compute status flags
+    const viewer = await User.findById(viewerId).select('friends').lean();
+    const friendsMap = new Map(); // userId -> friend subdoc
+    if (viewer && Array.isArray(viewer.friends)) {
+        for (const f of viewer.friends) {
+            friendsMap.set(String(f.user), f);
+        }
+    }
+
+    const total = await User.countDocuments(searchFilter);
+    const totalPages = Math.ceil(total / limit);
+
+    const found = await User.find(searchFilter)
+        .select('username avatar rank _id')
+        .sort({ rank: -1, username: 1 })
+        .skip(skip)
+        .limit(limit)
+        .lean();
+
+    const users = found.map(u => {
+        const fid = String(u._id);
+        const rel = friendsMap.get(fid);
+        const isFriend = !!(rel && rel.status === 'accepted');
+        const requestSent = !!(rel && rel.status === 'pending' && rel.isIncoming === false);
+        const requestReceived = !!(rel && rel.status === 'pending' && rel.isIncoming === true);
+
+        return {
+            id: fid,
+            username: u.username,
+            avatar: u.avatar,
+            rank: u.rank,
+            isFriend,
+            requestSent,
+            requestReceived,
+            canSendRequest: !isFriend && !requestSent && !requestReceived // frontend helper
+        };
+    });
+
+    return res.json({
+        success: true,
+        users,
+        page,
+        totalPages,
+        total
+    });
+};

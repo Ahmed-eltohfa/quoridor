@@ -2,9 +2,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    token: localStorage.getItem("token") || null,
-    user: localStorage.getItem("user") || null, // you can preload this too if stored
-    friends: []
+    user: null,
+    token: null,
+    friends: [],
+    searchedUsers: [], // Add this
 };
 
 const authSlice = createSlice({
@@ -25,9 +26,12 @@ const authSlice = createSlice({
         },
         setFriends: (state, action) => {
             state.friends = action.payload;
+        },
+        setSearchedUsers: (state, action) => {
+            state.searchedUsers = action.payload;
         }
     }
 });
 
-export const { setToken, clearToken, setUser, setFriends } = authSlice.actions;
+export const { setToken, clearToken, setUser, setFriends, setSearchedUsers } = authSlice.actions;
 export default authSlice.reducer;

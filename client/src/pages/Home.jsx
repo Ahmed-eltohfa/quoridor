@@ -41,9 +41,9 @@ export default function Home() {
       dispatch(setFriends(friendsData.slice(0,5)));
       return friendsData;
     }
-
-    fetchFriends();
-  }, [user]);
+    if (token)
+      fetchFriends();
+  }, [user,token]);
 
   return (
     <div className="text-white space-y-10">

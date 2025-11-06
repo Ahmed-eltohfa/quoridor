@@ -9,7 +9,8 @@ function UserProfile() {
   const [sendingFriend, setSendingFriend] = useState(false);
   const [sendingInvite, setSendingInvite] = useState(false);
   const [actionMsg, setActionMsg] = useState(null); // {type: 'success'|'error', text: string}
-
+  const userId = window.location.pathname.split('/').pop();
+  
   const currentUser = useSelector((state) => state.auth.user);
   const token = useSelector((state) => state.auth.token);
   
@@ -22,7 +23,6 @@ function UserProfile() {
 
   useEffect(() => {
     // get user id from url
-    const userId = window.location.pathname.split('/').pop();
     console.log(userId);
     
     const fetchUserData = async () => {
@@ -64,6 +64,7 @@ function UserProfile() {
         <div className="bg-[#0f1724] rounded-lg p-6 flex flex-col items-center gap-4 shadow-lg">
           <img src={avatars[avatar] || avatars[0]} alt="Avatar" className="w-40 h-40 rounded-full border-4 border-gray-700 shadow-xl" />
           <h1 className="text-3xl font-bold">{username}</h1>
+          <div className="text-sm text-gray-300 text-center">Player ID: {userId}</div>
           <div className="text-gray-400">Member since: {new Date(playerSince).toISOString().split('T')[0]}</div>
 
           <div className="w-full mt-4 grid grid-cols-3 gap-3">
