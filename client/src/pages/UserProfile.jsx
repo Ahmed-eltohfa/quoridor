@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { avatars } from '../utils/avatars';
 import { useSelector } from 'react-redux';
+import { LoadingScreen } from '../components/LoadingSpinner';
 
 
 function UserProfile() {
@@ -182,7 +183,7 @@ function UserProfile() {
       </div>
     </div>
       ) : (
-        <p>Loading...</p>
+        <LoadingScreen text="Loading user profile..." />
       )}
     </div>
   )

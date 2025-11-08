@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     user: null,
-    token: null,
+    token: localStorage.getItem("token") || null,
     friends: [],
     searchedUsers: [], // Add this
 };

@@ -1,5 +1,6 @@
 import { FaCrown, FaMedal } from "react-icons/fa";
 import { useEffect, useState } from "react";
+import { LoadingScreen } from "../components/LoadingSpinner";
 
 const medalColor = {
   gold: "text-yellow-400",
@@ -42,7 +43,7 @@ export default function Leaderboard() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0e0e11] text-white flex items-center justify-center">
-        <p>Loading leaderboard...</p>
+        <LoadingScreen text="Loading leaderboard..." />
       </div>
     );
   }

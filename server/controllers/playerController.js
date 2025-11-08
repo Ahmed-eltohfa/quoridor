@@ -107,7 +107,7 @@ export const respondToFriendRequest = async (req, res) => {
     if (!req.body) {
         return res.status(400).json({ success: false, message: "Request body required" });
     }
-    if (!req.body.requestId || !req.body.accept) {
+    if (!req.body.requestId) {
         return res.status(400).json({ success: false, message: "requestId required" });
     }
     if (typeof req.body.requestId !== 'string') {
@@ -149,7 +149,7 @@ export const respondToFriendRequest = async (req, res) => {
         );
     } else {
         // Remove the friend request from both users
-        user.friends = user.friends.filter(f => f._id !== requestId);
+        user.friends = user.friends.filter(f => f._id.toString() !== requestId);
         await User.findByIdAndUpdate(
             friendRequest.user,
             {

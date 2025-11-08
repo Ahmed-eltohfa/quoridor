@@ -17,7 +17,7 @@ import Game from './pages/Game';
 import Footer from './components/Footer.jsx';
 import Play from './pages/Play.jsx';
 import ScrollToTop from './components/ScrollToTop.jsx';
-import { setUser } from './rtk/slices/authSlice.js';
+import { setToken, setUser } from './rtk/slices/authSlice.js';
 import axios from 'axios';
 import UserProfile from './pages/UserProfile.jsx';
 // new repo

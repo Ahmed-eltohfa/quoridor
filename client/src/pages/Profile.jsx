@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux';
 import { clearToken, setUser } from '../rtk/slices/authSlice.js';
 import axios from 'axios';
 import { avatars } from '../utils/avatars.js';
+import { LoadingScreen } from '../components/LoadingSpinner';
 
 export default function Profile() {
   const user = useSelector((state) => state.auth.user);
@@ -75,7 +76,7 @@ export default function Profile() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0e0e11] text-white flex items-center justify-center">
-        <div>Loading profile...</div>
+        <LoadingScreen text="Loading profile..." />
       </div>
     );
   }
