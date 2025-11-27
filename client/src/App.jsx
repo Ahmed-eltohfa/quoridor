@@ -20,6 +20,9 @@ import ScrollToTop from './components/ScrollToTop.jsx';
 import { setToken, setUser } from './rtk/slices/authSlice.js';
 import axios from 'axios';
 import UserProfile from './pages/UserProfile.jsx';
+import { setAuthToken } from './utils/socket.js';
+import { Confirm } from "notiflix/build/notiflix-confirm-aio";
+
 // new repo
 function App() {
 
@@ -49,9 +52,24 @@ function App() {
       }
     };
 
+    
     getUser();
+    setAuthToken(token);
   }, [token, dispatch]); // Only run when token changes
 
+  useEffect(() =>{
+    Confirm.init({
+      backgroundColor: "#1c1c1c",
+      borderRadius: "16px",
+      titleColor: "#fff",
+      messageColor: "#d1d1d1",
+      okButtonBackground: "#22c55e",
+      cancelButtonBackground: "#ef4444",
+      okButtonColor: "#fff",
+      cancelButtonColor: "#fff",
+      width: "300px",
+    });
+  })
 
   return (
     <>

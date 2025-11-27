@@ -39,7 +39,7 @@ function startNewGame() {
             rl.question("Enter board size (e.g., 9): ", (boardSize) => {
                 g1 = new Game({
                     p1: { name: p1Name, position: null },
-                    p2: { name: p2Name, position: null },
+                    p2: { name: p2Name, position: null, isComputer: true, difficulty: 5, nWalls: 2 },
                     boardSize: Number(boardSize),
                 });
 
@@ -89,30 +89,36 @@ function makeMove() {
         } else {
             console.log("Invalid move format.");
         }
+        g1.move(g1.p2.smartMove(g1)); // Computer makes a move
+        g1.printAllBoard();
         displayMenu();
     });
 }
 
 // Initialize the game menu on start
-let g11 = null;
+let g1 = null;
 
 function gameMenu(game) {
-    g11 = game;  // Store the game object for later use
+    g1 = game;  // Store the game object for later use
     displayMenu();
 }
 
 
-// displayMenu();
+displayMenu();
 
 
 
-const g1 = new Game({
-    p1: { name: "Player 1", difficulty: 2 },
-    p2: { name: "Player 2", difficulty: 4, position: null },
-    boardSize: 9,
-});
-g1.printAllBoard();
-console.log(JSON.stringify(g1.p1.getValidMoves(g1, 18)));
+// const g1 = new Game({
+//     p1: { name: "Player 1", difficulty: 2 },
+//     p2: { name: "Player 2", difficulty: 4, position: null },
+//     boardSize: 9,
+// });
+// g1.printAllBoard();
+// g1.move('p1_1-6');
+// // g1.move('p2_8-5');
+// g1.printAllBoard();
+// console.log(JSON.stringify(g1.p1.getValidMoves(g1, 18)));
+// console.log(JSON.stringify(g1.p2.getValidMoves(g1, 18)));
 
 
 // while (g1.isGameOver === false) {

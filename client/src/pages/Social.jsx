@@ -8,6 +8,7 @@ import { setFriends, setSearchedUsers } from '../rtk/slices/authSlice';
 import LoadingSpinner from '../components/LoadingSpinner';
 import NotifyX from "notifyx";
 import "notifyx/style.css";
+import { socket } from '../utils/socket';
 
 export default function Social() {
   const [search, setSearch] = useState('');
@@ -99,10 +100,19 @@ export default function Social() {
   };
 
   const sendInvite = (targetUserId) => {
-    // Implement your invite logic here
-    NotifyX.info(`Invite sent to user ID: ${targetUserId}`);
-    console.debug && console.debug(`Invite sent to user ID: ${targetUserId}`); // optional debug
+    if (!token) {
+      NotifyX.error('Login required to invite');
+      return;
+    }
+    if (!socket || !socket.connected) {
+      NotifyX.error('Realtime connection not available');
+      return;
+    }
+    socket.emit('invite:send', { targetUserId });
+    NotifyX.info('Sending invite...');
   }
+
+
 
   // Add this new effect to fetch pending requests
   useEffect(() => {

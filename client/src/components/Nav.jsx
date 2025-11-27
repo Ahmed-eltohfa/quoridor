@@ -69,7 +69,7 @@ const Navbar = () => {
 
     return (
         <>
-        <nav className="fixed top-0 bottom-auto h-16 w-full z-[1000] bg-bg-main border-b border-gray-300 shadow-md flex items-center justify-between px-4 max-w-full overflow-hidden">
+        <nav className="fixed top-0 bottom-auto h-16 w-full z-[10] bg-bg-main border-b border-gray-300 shadow-md flex items-center justify-between px-4 max-w-full overflow-hidden">
         {/* Left: Logo */}
         <div className="flex w-[190px] overflow-hidden max-h-full py-0 items-center">
             {/* Mobile Burger Icon */}
