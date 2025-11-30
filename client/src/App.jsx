@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux'
 import Nav from './components/Nav';
 import './App.css'
@@ -20,14 +20,62 @@ import ScrollToTop from './components/ScrollToTop.jsx';
 import { setToken, setUser } from './rtk/slices/authSlice.js';
 import axios from 'axios';
 import UserProfile from './pages/UserProfile.jsx';
-import { setAuthToken } from './utils/socket.js';
+import { eventBus, setAuthToken, socket } from './utils/socket.js';
 import { Confirm } from "notiflix/build/notiflix-confirm-aio";
+import { updateGameInfo } from './rtk/slices/gameSlice.js';
+import { updateMode, updatePlayerNum } from './rtk/slices/settingsSlice.js';
 
 // new repo
 function App() {
 
   const token = useSelector((state) => state.auth.token);
+  const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   // Listen to eventBus
+  //   const unsubscribe = eventBus.on("invite:accepted", (payload) => {
+  //     navigate(`/game/`);
+  //   });
+
+  //   return unsubscribe; // removed when App unmounts (never)
+  // }, []);
+
+  useEffect(() =>{
+    console.log(user);
+  },[user])
+
+  useEffect(() => {
+    const handleMatchFound = (matchData) => {
+      console.log("Match found!", matchData);
+      if (matchData.success === false) {
+        console.error("Error finding match:", matchData.message);
+        return;
+      }
+      else{
+        dispatch(updateMode('quick'));
+        dispatch(updateGameInfo({
+          p1: { name: matchData.players[0].username, nWalls: 10, avatar: matchData.players[0].avatar }, // Player 1 info
+          p2: { name: matchData.players[1].username, nWalls: 10, avatar: matchData.players[1].avatar, }, // Player 2 info
+          boardSize: 9,
+        }))
+        console.log(user)
+        dispatch(updatePlayerNum(matchData.players[0].id === user._id ? 1 : 2)); // Update player number based on user ID
+        // Redirect to the game page 
+        navigate('/play');
+      }
+    };
+  
+      // Listen for the event
+      socket.on("startGame", handleMatchFound);
+  
+      // Cleanup only the listener you added
+      return () => {
+        socket.off("startGame", handleMatchFound);
+      };
+    }, [user]);
 
   useEffect(() => {
     if (!token) return;

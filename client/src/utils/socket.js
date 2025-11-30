@@ -25,8 +25,13 @@ export const socket = io(import.meta.env.VITE_BACKEND_URL, {
 });
 
 const eventBus = new EventTarget();
-eventBus.on = (name, fn) => eventBus.addEventListener(name, (e) => fn(e.detail));
-eventBus.off = (name, fn) => eventBus.removeEventListener(name, fn);
+// eventBus.on = (name, fn) => eventBus.addEventListener(name, (e) => fn(e.detail));
+eventBus.on = (name, fn) => {
+    const wrapper = (e) => fn(e.detail);
+    eventBus.addEventListener(name, wrapper);
+    return () => eventBus.removeEventListener(name, wrapper);
+};
+// eventBus.off = (name, fn) => eventBus.removeEventListener(name, fn);
 eventBus.emit = (name, data) => eventBus.dispatchEvent(new CustomEvent(name, { detail: data }));
 
 socket.on("connect", () => {
@@ -52,11 +57,11 @@ const forward = (evt, busName = evt, notify = null, message = null) => {
             showGameInvite(
                 payload.from.username || "Unknown Player",
                 () => {
-                    // socket.emit("invite:respond", { inviteId: payload.inviteId, accept: true });
+                    socket.emit("invite:respond", { inviteId: payload.inviteId, accept: true });
                     console.log("Accepted invite:", payload.inviteId);
                 },
                 () => {
-                    // socket.emit("invite:respond", { inviteId: payload.inviteId, accept: false });
+                    socket.emit("invite:respond", { inviteId: payload.inviteId, accept: false });
                     console.log("Declined invite:", payload.inviteId);
                 }
             );
@@ -69,21 +74,20 @@ const forward = (evt, busName = evt, notify = null, message = null) => {
 };
 
 forward("invite:received", "invite:received", "info");
-forward("invite:send:result", "invite:send:result");
+forward("invite:send:result", "invite:send:result", 'success', 'Game invite sent');
 forward("invite:accepted", "invite:accepted", "success");
 forward("register:success", "register:success", "success", "Connected to realtime server");
 forward("register:failed", "register:failed", "error");
-forward("invite:rejected", "invite:rejected");
-forward("invite:expired", "invite:expired");
-forward("invite:cancelled", "invite:cancelled");
-forward("invite:rejected", "invite:rejected");
-forward("invite:accepted", "invite:accepted");
-forward("invite:respond:result", "invite:respond:result");
+forward("invite:expired", "invite:expired", 'info', 'Game invite expired');
+forward("invite:cancelled", "invite:cancelled", 'info');
+forward("invite:rejected", "invite:rejected", 'info', 'Game invite rejected');
+forward("invite:respond:result", "invite:respond:result", 'info');
 
-forward("opponentDisconnected", "opponentDisconnected");
+forward("opponentDisconnected", "opponentDisconnected", 'info', 'Your opponent has disconnected');
 
 export function setAuthToken(token) {
     authToken = token;
+
     if (token && socket && socket.connected) {
         socket.emit("register", { token });
     }
