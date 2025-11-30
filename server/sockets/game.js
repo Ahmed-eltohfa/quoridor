@@ -178,4 +178,8 @@ const setupGameSocket = (io, socket) => {
     });
 };
 
+// add getters so other server modules (routes) can read runtime stats
+export const getConnectedUsersCount = () => userSockets.size;
+export const getPendingInvitesCount = () => pendingInvites.size;
+
 export default setupGameSocket;

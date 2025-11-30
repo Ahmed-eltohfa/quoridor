@@ -6,7 +6,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 
 import authRoutes from './routes/auth.js';
-import playerRouter from './routes/players.js'
+import playerRouter from './routes/players.js';
+import statusRouter from './routes/status.js'; // <-- added
 import setupGameSocket from './sockets/game.js';
 import connectDB from './config/connectdb.js';
 import socketAuth from './middlewears/socketMiddlewear.js';
@@ -33,6 +34,7 @@ connectDB();
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/players', playerRouter);
+app.use('/api/status', statusRouter); // <-- added
 
 // Socket.io setup
 io.on('connection', (socket) => {
