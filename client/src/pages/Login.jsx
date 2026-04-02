@@ -10,9 +10,12 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setToken } from '../rtk/slices/authSlice';
+import NotifyX from 'notifyx';
+import 'notifyx/style.css';
 
 export default function Auth() {
     const [isLogin, setIsLogin] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const avatars = [
         avatar1, avatar2, avatar3, avatar4, avatar5, avatar6
     ];
@@ -36,20 +39,25 @@ export default function Auth() {
 
     const handleGuestLogin = () => {
         const guestSignup = async () => {
+            setIsLoading(true);
+            NotifyX.info('Logging in as guest...');
             try {
                 const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}api/auth/guest-register`);
                 console.log('Guest registration successful:', response.data);
                 //saving the token in localStorage
                 if (response.data.success) {
                     dispatch(setToken(response.data.token));
+                    NotifyX.success('Guest login successful!');
                     navigate('/');
                 }else{
-                    alert(response.data.message);
+                    NotifyX.error(response.data.message);
                     return;
                 }
             } catch (error) {
                 console.error('Error during guest registration:', error);
-                alert('Guest registration failed. Please try again.', error);
+                NotifyX.error('Guest registration failed. Please try again.');
+            } finally {
+                setIsLoading(false);
             }
         }
         guestSignup();
@@ -57,13 +65,17 @@ export default function Auth() {
 
     const handleBtnSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
+        
         // Handle form submission logic here
         if (isLogin) {
             console.log('Logging in...');
             if (!email || !password) {
-                alert('Please fill in all fields');
+                NotifyX.error('Please fill in all fields');
+                setIsLoading(false);
                 return;
             }
+            NotifyX.info('Logging in...');
             const loginUser = async () => {
                 try {
                     const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}api/auth/login`, {
@@ -74,14 +86,17 @@ export default function Auth() {
                     //saving the token in localStorage
                     if (response.data.success) {
                         dispatch(setToken(response.data.token));
+                        NotifyX.success('Login successful!');
                         navigate('/');
                     }else{
-                        alert(response.data.message);
+                        NotifyX.error(response.data.message);
                         return;
                     }
                 } catch (error) {
                     console.error('Error during login:', error);
-                    alert('Login failed. Please try again.');
+                    NotifyX.error('Login failed. Please try again.');
+                } finally {
+                    setIsLoading(false);
                 }
             }
             await loginUser();
@@ -89,14 +104,17 @@ export default function Auth() {
         else {
             console.log('Signing up...');
             if (selectedAvatar === null) {
-                alert('Please select an avatar');
+                NotifyX.error('Please select an avatar');
+                setIsLoading(false);
                 return;
             }
             if (!username || !email || !password) {
-                alert('Please fill in all fields');
+                NotifyX.error('Please fill in all fields');
+                setIsLoading(false);
                 return;
             }
             // console.log(import.meta.env.VITE_BACKEND_URL);
+            NotifyX.info('Creating your account...');
             const registerUser = async () => {
                 try {
                     const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}api/auth/signup`, {
@@ -109,14 +127,17 @@ export default function Auth() {
                     //saving the token in localStorage
                     if (response.data.success) {
                         dispatch(setToken(response.data.token));
+                        NotifyX.success('Account created successfully!');
                         navigate('/');
                     }else{
-                        alert(response.data.message);
+                        NotifyX.error(response.data.message);
                         return;
                     }
                 } catch (error) {
                     console.error('Error during registration:', error);
-                    alert('Registration failed. Please try again.');
+                    NotifyX.error('Registration failed. Please try again.');
+                } finally {
+                    setIsLoading(false);
                 }
             };
             await registerUser();
@@ -195,10 +216,14 @@ export default function Auth() {
 
                 <button
                     type="submit"
-                    className="w-full bg-btn-primary hover:bg-btn-hover transition-colors py-2 rounded text-white font-medium cursor-pointer"
+                    disabled={isLoading}
+                    className="w-full bg-btn-primary hover:bg-btn-hover disabled:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors py-2 rounded text-white font-medium cursor-pointer flex items-center justify-center gap-2"
                     onClick={handleBtnSubmit}
                 >
-                    {isLogin ? 'Login' : 'Sign Up'}
+                    {isLoading && (
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    )}
+                    {isLogin ? (isLoading ? 'Logging in...' : 'Login') : (isLoading ? 'Signing up...' : 'Sign Up')}
                 </button>
             </form>
 
@@ -210,10 +235,14 @@ export default function Auth() {
 
             <button
                 onClick={handleGuestLogin}
-                className="w-full flex items-center justify-center gap-3 bg-btn-secondary text-white py-2 rounded hover:bg-secondary-hover cursor-pointer transition-colors"
+                disabled={isLoading}
+                className="w-full flex items-center justify-center gap-3 bg-btn-secondary text-white py-2 rounded hover:bg-secondary-hover disabled:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors"
             >
+                {isLoading && (
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                )}
                 <span className="text-xl">👤</span>
-                Continue as Guest
+                {isLoading ? 'Logging in...' : 'Continue as Guest'}
             </button>
 
 

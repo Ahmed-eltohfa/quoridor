@@ -11,6 +11,7 @@ import avatar4 from '../assets/avatar4.png';
 import avatar5 from '../assets/avatar5.png';
 import avatar6 from '../assets/avatar6.png';
 import { clearToken, setUser } from '../rtk/slices/authSlice';
+import { socket } from './../utils/socket';
 
 const Navbar = () => {
     const location = useLocation();
@@ -67,6 +68,13 @@ const Navbar = () => {
         { path: '/settings', name: 'Settings', icon: <FaCog className="text-lg" /> },
     ];
 
+    const onLogOut = () => {
+        dispatch(clearToken());
+        dispatch(setUser(null));
+        navigate('/');
+        socket.disconnect();
+    }
+
     return (
         <>
         <nav className="fixed top-0 bottom-auto h-16 w-full z-[10] bg-bg-main border-b border-gray-300 shadow-md flex items-center justify-between px-4 max-w-full overflow-hidden">
@@ -118,11 +126,7 @@ const Navbar = () => {
                 >
                 <button
                     className="px-[7px] py-[5px] md:px-4 md:py-2 mr-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-                    onClick={() => {
-                        dispatch(clearToken());
-                        dispatch(setUser(null));
-                        navigate('/');
-                    }}
+                    onClick={onLogOut}
                     >
                     Logout
                 </button>
