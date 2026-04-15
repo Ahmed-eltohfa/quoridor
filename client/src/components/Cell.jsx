@@ -3,7 +3,7 @@ import { trigger, updateValidMoves, updateValidWalls } from "../rtk/slices/gameS
 import { socket } from '../utils/socket';
 
 
-export default function Cell({ player, offset, size, game, position,triggerRender }) {
+export default function Cell({ player, offset, size, game, position, triggerRender, playMoveSound }) {
     
     const gamedata = useSelector((state) => state.game.validMoves);
     const gameMode = useSelector((state) => state.settings.gameMode);
@@ -57,11 +57,13 @@ export default function Cell({ player, offset, size, game, position,triggerRende
         
         // game.current.move(moveStr);
         await console.log(game.current.move(String(moveStr)));
+        playMoveSound();
         await dispatch(updateValidMoves([]));
         await triggerRender();
         if (gameMode === 'ai' && !game.current.isP1Turn) {
             // console.log('AI Move');
             console.log(game.current.move(String(game.current.p2.smartMove(game.current))));
+            playMoveSound();
         }        
         dispatch(updateValidMoves([]));
         triggerRender();

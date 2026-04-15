@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateValidMoves } from '../rtk/slices/gameSlice';
 import { socket } from '../utils/socket';
 import { useNavigate } from 'react-router-dom';
-
+import moveSound from '../assets/move.mp3';
 
 function Play() {
 
@@ -23,10 +23,12 @@ function Play() {
     const dispatch = useDispatch();
     const gameInfo = useSelector((state => state.game.gameInfo));
     const gameSettings = useSelector(state => state.settings.gameMode);
+    const playerNum = useSelector(state => state.settings.playerNumifOnline);
     useEffect(()=>{
         console.log(gameInfo);
         console.log(gameSettings);
     },[gameInfo]);
+    let winnerIfDisconnect = null;
     
     
     const game = useRef(new Game(gameInfo));
@@ -46,14 +48,24 @@ function Play() {
                 if (data.gameState.move && data.gameState.move.length !== game.current.moves[game.current.moves.length - 1]) {
                     const move = data.gameState.move;
                     game.current.move(move);
+                    playMoveSound();
                     triggerRender();
                 }
             }
         });
+
+        socket.on("opponentDisconnected", (data) => {
+            console.log("Server says:", data);
+            game.current.isGameOver = true;
+            winnerIfDisconnect = true;
+            triggerRender();
+        }
+        );
         return () => {
             socket.off("invalidMove");
             socket.off("gameOver");
             socket.off("gameUpdated");
+            socket.off("opponentDisconnected");
         };
     }, []);
     
@@ -81,12 +93,12 @@ function Play() {
         for (let i = 0; i < size+1; i++) {
             game.current.walls[i].forEach((wall, j) => {
                 const key = `w-${i}-${j}`;
-                grid.push(<WallNode key={key} walls={wall} position={{i,j}} size={size} game={game} triggerRender={triggerRender} />);
+                grid.push(<WallNode key={key} walls={wall} position={{i,j}} size={size} game={game} triggerRender={triggerRender} playMoveSound={playMoveSound} />);
             });
             if (i === size) break; // Skip the last row for walls
             for (let j = 0; j < size; j++) {
                 const key = `c-${i}-${j}`;
-                grid.push(<Cell key={key} player={game.current.board[i][j]} offset={j} size={size} game={game} position={ {i, j} } triggerRender={triggerRender} />);
+                grid.push(<Cell key={key} player={game.current.board[i][j]} offset={j} size={size} game={game} position={ {i, j} } triggerRender={triggerRender} playMoveSound={playMoveSound} />);
             }
             grid.push(<div key={`end-${i}`} className="w-0 h-0" />); // Empty cell at the end of each row
         }
@@ -118,34 +130,102 @@ function Play() {
         navigate('/');
     }
 
+    const playMoveSound = () => {
+        const audio = new Audio(moveSound);
+        audio.volume = 0.5;
+        audio.play().catch(err => console.log('Sound play failed:', err));
+    }
+
     return (
         <div className="min-h-screen bg-[#0e0e11] text-white py-6 flex flex-col items-center">
-            {game.current.isGameOver && (
-                <div className="fixed inset-0 bg-[#00000087] bg-opacity-70 flex flex-col items-center justify-center z-[1000]">
-                    <div className="winner-card rounded-2xl shadow-2xl p-8 text-center border-4 border-amber-900">
-                        <h1 className="text-5xl font-extrabold text-white drop-shadow-lg mb-4">
-                            GAME OVER
-                        </h1>
-                        <p className="text-2xl text-text-secondary font-semibold mb-6">
-                            Winner: <span className="">{game.current.winner === 1 ? game.current.p1.name : game.current.p2.name }</span>
-                        </p>
-                        <div className="flex gap-4 justify-center">
-                            <button
-                                onClick={onPlayAgain}
-                                className="px-6 py-3 bg-btn-primary hover:bg-btn-hover rounded-lg font-bold text-white shadow-md"
-                            >
-                                Restart
-                            </button>
-                            <button
-                                onClick={onExit}
-                                className="px-6 py-3 bg-btn-secondary hover:bg-secondary-hover rounded-lg font-bold text-white shadow-md"
-                            >
-                                Exit
-                            </button>
+            {game.current.isGameOver && (() => {
+                const isPlayerWinner = winnerIfDisconnect ? true : (game.current.winner === playerNum || game.current.winner === 1);
+                // console.log("Game over! Winner is player", game.current.winner);
+                const isOnlineGame = gameSettings === 'quick';
+                return (
+                    <div className="fixed inset-0 bg-black bg-opacity-80 flex flex-col items-center justify-center z-[1000] backdrop-blur-sm">
+                        {/* Animated background effect */}
+                        <div className={`absolute inset-0 opacity-20 ${isPlayerWinner ? 'bg-gradient-to-br from-green-500 via-transparent to-transparent animate-pulse' : 'bg-gradient-to-br from-red-500 via-transparent to-transparent animate-pulse'}`}></div>
+                        
+                        <div className={`gameOverCard relative rounded-3xl shadow-2xl p-12 text-center border-2 
+                            ${isPlayerWinner 
+                                ? 'border-green-400 bg-gradient-to-b from-[#1a1a1f] to-[#0e0e11] victory-glow' 
+                                : 'border-red-400 bg-gradient-to-b from-[#1a1a1f] to-[#0e0e11] defeat-glow'
+                            } max-w-md w-full mx-4 animate-scaleIn`}>
+                            
+                            {/* Victory/Defeat Badge */}
+                            <div className={`inline-block mb-4 px-6 py-2 rounded-full text-sm font-bold tracking-widest
+                                ${isPlayerWinner 
+                                    ? 'bg-green-500 bg-opacity-20 text-green-300 border border-green-400' 
+                                    : 'bg-red-500 bg-opacity-20 text-red-300 border border-red-400'
+                                }`}>
+                                {isPlayerWinner ? '🎉 VICTORY! 🎉' : '💔 DEFEAT 💔'}
+                            </div>
+                            
+                            {/* Main Title */}
+                            <h1 className={`text-6xl font-black mb-2 drop-shadow-lg ${
+                                isPlayerWinner ? 'text-green-300' : 'text-red-300'
+                            }`}>
+                                {isPlayerWinner ? 'YOU WIN!' : 'GAME OVER'}
+                            </h1>
+                            
+                            {/* Winner Name */}
+                            <p className="text-xl text-text-secondary font-semibold mb-8">
+                                <span className={`font-bold ${isPlayerWinner ? 'text-green-400' : 'text-red-400'}`}>
+                                    Winner: {game.current.winner === 1 ? game.current.p1.name : game.current.p2.name}
+                                </span>
+                            </p>
+
+                            {/* Stats Section */}
+                            <div className="bg-[#252530] bg-opacity-60 rounded-xl p-6 mb-8 border border-[#3a3a42]">
+                                <p className="text-text-muted text-xs uppercase tracking-wider mb-4">Match Statistics</p>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <p className="text-text-muted text-sm mb-1">Walls Used</p>
+                                        <p className="text-2xl font-bold text-text-primary">
+                                            {game.current.p1.nWalls}
+                                        </p>
+                                        <p className="text-xs text-text-muted">{game.current.p1.name}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-text-muted text-sm mb-1">Walls Used</p>
+                                        <p className="text-2xl font-bold text-text-primary">
+                                            {game.current.p2.nWalls}
+                                        </p>
+                                        <p className="text-xs text-text-muted">{game.current.p2.name}</p>
+                                    </div>
+                                </div>
+                                <div className="mt-4 pt-4 border-t border-[#3a3a42]">
+                                    <p className="text-text-muted text-sm mb-2">Total Moves</p>
+                                    <p className="text-lg font-semibold text-badge-lock">{game.current.moves.length}</p>
+                                </div>
+                            </div>
+                            
+                            {/* Action Buttons */}
+                            <div className="flex flex-col gap-3">
+                                {!isOnlineGame && (
+                                    <button
+                                        onClick={onPlayAgain}
+                                        className={`w-full px-6 py-3 rounded-lg font-bold text-white text-lg transition-all duration-200
+                                            ${isPlayerWinner 
+                                                ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-400 hover:to-green-500 shadow-lg hover:shadow-green-500/50 hover:shadow-2xl' 
+                                                : 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 shadow-lg hover:shadow-blue-500/50 hover:shadow-2xl'
+                                            }`}
+                                    >
+                                        Rematch
+                                    </button>
+                                )}
+                                <button
+                                    onClick={onExit}
+                                    className="w-full px-6 py-3 bg-btn-secondary hover:bg-secondary-hover rounded-lg font-bold text-white text-lg transition-all duration-200 shadow-md hover:shadow-lg"
+                                >
+                                    Return Home
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                );
+            })()}
             
             {/* Top Player Info 2 */}
             <div className={`${game.current.isP1Turn ? 'off' : 'on'} flex justify-between items-center px-4 py-1 bg-btn-secondary text-badge-lock rounded-xl shadow-inner w-4/5 md:w-3/5 max-w-[400px] gap-5 md:gap-1`}>

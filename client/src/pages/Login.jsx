@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux';
 import { setToken } from '../rtk/slices/authSlice';
 import NotifyX from 'notifyx';
 import 'notifyx/style.css';
+import { socket } from '../utils/socket';
 
 export default function Auth() {
     const [isLogin, setIsLogin] = useState(true);
@@ -48,6 +49,7 @@ export default function Auth() {
                 if (response.data.success) {
                     dispatch(setToken(response.data.token));
                     NotifyX.success('Guest login successful!');
+                    socket.connect();
                     navigate('/');
                 }else{
                     NotifyX.error(response.data.message);
@@ -87,6 +89,7 @@ export default function Auth() {
                     if (response.data.success) {
                         dispatch(setToken(response.data.token));
                         NotifyX.success('Login successful!');
+                        socket.connect();
                         navigate('/');
                     }else{
                         NotifyX.error(response.data.message);

@@ -79,7 +79,7 @@ const Navbar = () => {
         <>
         <nav className="fixed top-0 bottom-auto h-16 w-full z-[10] bg-bg-main border-b border-gray-300 shadow-md flex items-center justify-between px-4 max-w-full overflow-hidden">
         {/* Left: Logo */}
-        <div className="flex w-[190px] overflow-hidden max-h-full py-0 items-center">
+        <div className="flex w-[190px] overflow-hidden max-h-full py-0 items-center" onClick={()=>{navigate('/')}}>
             {/* Mobile Burger Icon */}
             <div className="lg:hidden order-0 flex items-center cursor-pointer">
                 <button onClick={() => setMenuOpen(!menuOpen)} className="text-gray-300 hover:text-white text-xl cursor-pointer">

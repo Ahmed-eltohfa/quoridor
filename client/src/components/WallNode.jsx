@@ -3,7 +3,7 @@ import { trigger, updateValidMoves, updateValidWalls } from "../rtk/slices/gameS
 import { useEffect } from "react";
 import { socket } from '../utils/socket';
 
-export default function WallNode({ walls, position, size, game, triggerRender }) {
+export default function WallNode({ walls, position, size, game, triggerRender, playMoveSound }) {
 
     const validWalls = useSelector((state) => state.game);
     const triggerd = useSelector((state) => state.game.removeClass);
@@ -67,6 +67,7 @@ export default function WallNode({ walls, position, size, game, triggerRender })
                 validWalls.validWalls.forEach((wall) => {
                     if (wall.position[0] === i && wall.position[1] === j) {
                         game.current.move(String(wall.move));
+                        playMoveSound();
                         // console.log(gameMode);
                         dispatch(updateValidWalls([]));
                         triggerRender();
@@ -74,6 +75,7 @@ export default function WallNode({ walls, position, size, game, triggerRender })
                         if (gameMode === 'ai' && !game.current.isP1Turn) {
                             // console.log('AI Move');
                             console.log(game.current.move(String(game.current.p2.smartMove(game.current))));
+                            playMoveSound();
                             dispatch(updateValidWalls([]));
                             triggerRender();
                         }

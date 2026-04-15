@@ -6,6 +6,9 @@ import jwt from "jsonwebtoken";
 
 const userSockets = new Map(); // userId -> { socket, user }
 const pendingInvites = new Map(); // inviteId -> { fromId, toId, timeout }
+// setInterval(() => {
+//     console.log(gameManager.waitingPlayer?.user);
+// }, 2000);
 
 const setupGameSocket = (io, socket) => {
     // console.log('in setup');

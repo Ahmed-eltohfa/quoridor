@@ -49,7 +49,13 @@ class GameManager {
 
             this.waitingPlayer = null; // reset
             return roomId;
-        } else {
+        } else if (this.waitingPlayer && this.waitingPlayer.socket.id === socket.id) {
+            // this.waitingPlayer = { socket, user };
+            return null;
+        } else if (this.getGameBySocket(socket)) { // check if player is already in a game
+            return null;
+        }
+        else {
             // No one waiting yet
             this.waitingPlayer = { socket, user };
             return null;

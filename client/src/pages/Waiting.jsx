@@ -67,6 +67,13 @@ export default function Waiting() {
     return () => clearInterval(interval);
   }, []);
 
+  // For testing purposes, you can trigger the joinGame event with a button click
+  // In production, this would be triggered when the component mounts or when the user clicks a "Find Match" button
+  useEffect(() => {
+    socket.emit("joinGame", { username: user.username, userId: user._id, rank: user.rank, avatar: user.avatar });
+    console.log("Join game trigger sent");
+  }, []); // Empty dependency array to run only once on mount
+
   return (
     <div className="min-h-screen bg-[#0e0e11] text-white flex flex-col items-center justify-center px-4 text-center animate-fade-in">
       <button
@@ -94,6 +101,16 @@ export default function Waiting() {
           <span className="text-sm text-text-secondary mt-2">Finding Opponent</span>
         </div>
       </div>
+      <button
+      className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4'
+      onClick={() => {
+        socket.emit("unwaitPlayer", { username: user.username, userId: user._id, rank: user.rank, avatar: user.avatar });
+        console.log("Unwait player trigger sent");
+        navigate('/')
+      }}
+      >
+        Stop looking for match
+      </button>
 
       <FaUserFriends className="text-blue-400 text-5xl mb-4" />
       <h1 className="text-2xl font-bold mb-2">Looking for a Match...</h1>
