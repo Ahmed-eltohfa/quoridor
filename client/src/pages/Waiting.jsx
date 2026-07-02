@@ -76,7 +76,7 @@ export default function Waiting() {
 
   return (
     <div className="min-h-screen bg-[#0e0e11] text-white flex flex-col items-center justify-center px-4 text-center animate-fade-in">
-      <button
+      {/* <button
       className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4'
       onClick={() => {
         socket.emit("joinGame", { username: user.username, userId: user._id, rank: user.rank, avatar: user.avatar });
@@ -84,7 +84,7 @@ export default function Waiting() {
       }}
       >
         TEST JOIN GAME TRIGERR
-      </button>
+      </button> */}
       <div className="flex items-center gap-10 mb-10">
         {/* Player avatar */}
         <div className="flex flex-col items-center">

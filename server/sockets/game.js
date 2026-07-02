@@ -148,6 +148,7 @@ const setupGameSocket = (io, socket) => {
 
     socket.on('disconnect', async () => {
         console.log(`Disconnected: ${socket.id}`);
+        socket.emit('unwaitPlayer'); // Notify the server to remove this player from waiting if they were waiting
         if (socket.userId) userSockets.delete(String(socket.userId));
         for (const [inviteId, inv] of pendingInvites.entries()) {
             if (inv.fromId === socket.userId || inv.toId === socket.userId) {

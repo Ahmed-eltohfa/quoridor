@@ -78,7 +78,7 @@ export default function Home() {
       </div>
 
       {/* Play Options */}
-      <div>
+      {/* <div>
         <h2 className="text-xl font-semibold mb-4">Play</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="bg-btn-secondary cursor-pointer rounded-xl p-5 flex gap-4 items-center hover:bg-secondary-hover transition-all">
@@ -100,7 +100,7 @@ export default function Home() {
               </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Tip + Live Player Stats */}
       <div className="bg-bg-card rounded-xl p-4 mt-4 space-y-2 shadow-md">

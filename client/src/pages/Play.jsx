@@ -15,6 +15,9 @@ import moveSound from '../assets/move.mp3';
 function Play() {
 
     window.addEventListener("beforeunload", function (e) {
+        if (window.location.pathname === "/waiting" || window.location.pathname === "/play") {
+            socket.emit('unwaitPlayer'); // Notify the server to remove this player from waiting if they were waiting
+        }
         e.preventDefault();
         e.returnValue = ""; // required for Chrome
     });
