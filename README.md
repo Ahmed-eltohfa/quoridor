@@ -16,9 +16,9 @@ https://drive.google.com/file/d/1BQw5STBcnl1feXzgxW6Q8pegyGubQJL7/view?usp=drive
 |------|----------|
 | <img src="https://github.com/user-attachments/assets/c6e07d7e-db37-400a-9c65-a4f2ff360447" width="450"> | <img src="https://github.com/user-attachments/assets/ea6b4e2c-a100-44ca-9dcf-5fd1619fa8f3" width="450"> |
 
-| Multiplayer | AI |
-|-------------|----|
-| <img src="https://github.com/user-attachments/assets/5493080d-cb4d-4052-b60f-5f95cc2db49c" width="450"> | <img src="YOUR_AI_IMAGE_URL" width="450"> |
+| Multiplayer |
+|-------------|
+| <img src="https://github.com/user-attachments/assets/5493080d-cb4d-4052-b60f-5f95cc2db49c" width="450"> |
 
 
 ---
