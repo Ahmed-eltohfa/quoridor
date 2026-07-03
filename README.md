@@ -12,8 +12,6 @@ https://drive.google.com/file/d/1BQw5STBcnl1feXzgxW6Q8pegyGubQJL7/view?usp=drive
 
 ## 📸 Screenshots
 
-> Add your screenshots here.
-
 ### Home Page
 
 ![Home](<img width="952" height="440" alt="image" src="https://github.com/user-attachments/assets/c6e07d7e-db37-400a-9c65-a4f2ff360447" />
